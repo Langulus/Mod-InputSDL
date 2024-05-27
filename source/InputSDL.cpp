@@ -13,7 +13,7 @@ LANGULUS_DEFINE_MODULE(
    "Raw input module, using SDL as backend - "
    "allows for raw mouse/joystick/keyboard inputs even on console applications, "
    "by using an external window", "",
-   InputSDL, InputGatherer, InputListener
+   InputSDL, InputGatherer, InputListener, Anticipator
 )
 
 
@@ -54,16 +54,62 @@ bool InputSDL::Update(Time deltaTime) {
       // User requests quit                                             
       switch (e.type) {
       case SDL_EVENT_QUIT:
-         Logger::Input("Quit");
+         return false;
+      case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+         Logger::Input("Joystick axis motion");
+         TODO();
          break;
-      case SDL_EVENT_JOYSTICK_ADDED:
-         Logger::Input("Joystick added");
+      case SDL_EVENT_JOYSTICK_BALL_MOTION:
+         Logger::Input("Joystick ball motion");
+         TODO();
+         break;
+      case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+         Logger::Input("Joystick button down");
+         TODO();
+         break;
+      case SDL_EVENT_JOYSTICK_BUTTON_UP:
+         Logger::Input("Joystick button up");
+         TODO();
+         break;
+      case SDL_EVENT_JOYSTICK_HAT_MOTION:
+         Logger::Input("Joystick hat motion");
+         TODO();
          break;
       case SDL_EVENT_CLIPBOARD_UPDATE:
          Logger::Input("Clipboard change detected");
+         TODO();
          break;
-      case SDL_EVENT_GAMEPAD_ADDED:
-         Logger::Input("Gamepad added");
+      case SDL_EVENT_MOUSE_MOTION:
+         Logger::Input("Mouse moved");
+         TODO();
+         break;
+      case SDL_EVENT_MOUSE_WHEEL:
+         Logger::Input("Mouse scrolled");
+         TODO();
+         break;
+      case SDL_EVENT_MOUSE_BUTTON_DOWN:
+         Logger::Input("Mouse button down");
+         TODO();
+         break;
+      case SDL_EVENT_MOUSE_BUTTON_UP:
+         Logger::Input("Mouse button up");
+         TODO();
+         break;
+      case SDL_EVENT_WINDOW_FOCUS_LOST:
+         Logger::Input("Focus lost");
+         TODO();
+         break;
+      case SDL_EVENT_WINDOW_FOCUS_GAINED:
+         Logger::Input("Focus gained");
+         TODO();
+         break;
+      case SDL_EVENT_KEY_DOWN:
+         Logger::Input("Keyboard button down");
+         TODO();
+         break;
+      case SDL_EVENT_KEY_UP:
+         Logger::Input("Keyboard button up");
+         TODO();
          break;
       }
    }

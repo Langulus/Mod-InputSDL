@@ -65,9 +65,6 @@ void InputGatherer::Interact(Verb& verb) {
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the system has been terminated by user request         
 bool InputGatherer::Update(Time deltaTime) {
-   Verbs::Interact interact {Events::MouseMove {relativeMouse}};
-   GetRuntime()->GetOwner()->Run(interact);
-
    // React to the gathered inputs                                      
    for (auto& listener : mListeners)
       listener.Update(deltaTime, mEventQueue);

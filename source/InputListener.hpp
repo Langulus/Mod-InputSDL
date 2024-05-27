@@ -40,7 +40,7 @@ public:
    InputListener(InputGatherer*, const Neat&);
 
    void Create(Verb&);
-   void Update(const Time&, const EventList&) {}
+   void Update(const Time&, const EventList&);
    void Refresh();
 };
 

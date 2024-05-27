@@ -7,7 +7,7 @@
 /// See LICENSE file, or https://www.gnu.org/licenses                         
 ///                                                                           
 #include "Main.hpp"
-#include <Langulus/UI.hpp>
+#include <Langulus/Input.hpp>
 #include <catch2/catch.hpp>
 
 
@@ -17,7 +17,7 @@ CATCH_TRANSLATE_EXCEPTION(::Langulus::Exception const& ex) {
    return ::std::string {Token {serialized}};
 }
 
-SCENARIO("GUI creation", "[gui]") {
+SCENARIO("Input handler creation", "[input]") {
    static Allocator::State memoryState;
    
    for (int repeat = 0; repeat != 10; ++repeat) {
@@ -26,33 +26,45 @@ SCENARIO("GUI creation", "[gui]") {
          Thing root;
          root.SetName("ROOT");
          root.CreateRuntime();
-         root.LoadMod("FTXUI");
+         root.LoadMod("InputSDL");
 
-         WHEN("The GUI system is created via abstractions") {
-            auto gui = root.CreateUnit<A::UI::System>();
+         WHEN("The input gatherer is created via abstractions") {
+            auto gatherer = root.CreateUnit<A::InputGatherer>();
+            auto listener = root.CreateUnit<A::InputListener>();
 
             // Update once                                              
             root.Update(Time::zero());
             root.DumpHierarchy();
 
-            REQUIRE(gui.GetCount() == 1);
-            REQUIRE(gui.CastsTo<A::UI::System>(1));
-            REQUIRE(gui.IsSparse());
-            REQUIRE(root.GetUnits().GetCount() == 1);
+            REQUIRE(gatherer.GetCount() == 1);
+            REQUIRE(gatherer.CastsTo<A::InputGatherer>(1));
+            REQUIRE(gatherer.IsSparse());
+
+            REQUIRE(listener.GetCount() == 1);
+            REQUIRE(listener.CastsTo<A::InputListener>(1));
+            REQUIRE(listener.IsSparse());
+
+            REQUIRE(root.GetUnits().GetCount() == 2);
          }
 
       #if LANGULUS_FEATURE(MANAGED_REFLECTION)
-         WHEN("The GUI system is created via tokens") {
-            auto gui = root.CreateUnitToken("GUISystem");
+         WHEN("The input gatherer is created via tokens") {
+            auto gatherer = root.CreateUnitToken("InputGatherer");
+            auto listener = root.CreateUnitToken("InputListener");
 
             // Update once                                              
             root.Update(Time::zero());
             root.DumpHierarchy();
 
-            REQUIRE(gui.GetCount() == 1);
-            REQUIRE(gui.CastsTo<A::UI::System>(1));
-            REQUIRE(gui.IsSparse());
-            REQUIRE(root.GetUnits().GetCount() == 1);
+            REQUIRE(gatherer.GetCount() == 1);
+            REQUIRE(gatherer.CastsTo<A::InputGatherer>(1));
+            REQUIRE(gatherer.IsSparse());
+
+            REQUIRE(listener.GetCount() == 1);
+            REQUIRE(listener.CastsTo<A::InputListener>(1));
+            REQUIRE(listener.IsSparse());
+
+            REQUIRE(root.GetUnits().GetCount() == 2);
          }
       #endif
 

@@ -34,8 +34,11 @@ void InputListener::AddAnticipator(const Anticipator& ant) {
    const auto foundEvent = mAnticipators.FindIt(ant.mEvent.mType);
    if (foundEvent) {
       const auto foundState = foundEvent.mValue->FindIt(ant.mEvent.mState);
-      if (foundState)
+      if (foundState) {
+         // Anticipator already exists, merge scripts                   
+         foundState.mValue->mFlow.Merge(ant.mFlow);
          return;
+      }
       foundEvent.mValue->Insert(ant.mEvent.mState, ant);
    }
    else {
@@ -60,10 +63,13 @@ void InputListener::Create(Verb& verb) {
 ///   @param events - events to react to                                      
 void InputListener::Update(const Time& deltaTime, const EventList& events) {
    // Execute all active anticipators' scripts                          
-   for (auto& ant : mAnticipators) {
-      for (auto& ant_state : ant.mValue) {
-         if (ant_state.mValue.Interact(events))
+   for (auto ant : mAnticipators) {
+      for (auto ant_state : ant.mValue) {
+         if (ant_state.mValue.Interact(events)) {
+            // The anticipator is active and needs to be updated each   
+            // tick                                                     
             ant_state.mValue.mFlow.Update(deltaTime);
+         }
       }
    }
 }
@@ -72,27 +78,8 @@ void InputListener::Update(const Time& deltaTime, const EventList& events) {
 /// searching for events associated with these abilities, and binding them as 
 /// anticipators                                                              
 void InputListener::AutoBind() {
-   // Collect link's abilities                                          
-   auto selector = Verb::From<Verbs::Select>({}, DataID::Of<VerbID>);
-   DoInHierarchy(selector, SeekStyle::Here);
-   if (selector.GetOutput().IsEmpty())
-      return;
-
-   // Find the events associated with the abilities                     
-   // Create anticipators for all abilities                             
-   selector.GetOutput().ForEach([this](const VerbID& v) {
-      // Use the whole system for interpretation                        
-      auto interpreter = Verb::From<Verbs::Interpret>({}, v);
-      DoInHierarchy(interpreter);
-
-      // Then rely on the associate verb here                           
-      if (!interpreter.GetOutput().IsEmpty()) {
-         auto associator = Verb::From<Verbs::Interpret>({}, interpreter.GetOutput());
-         Associate(associator);
-      }
-   });
+   TODO();
 }
-
 
 /// Descriptor constructor                                                    
 ///   @param desc - descriptor                                                
@@ -110,14 +97,14 @@ bool Anticipator::Interact(const EventList& events) {
 
    if (mEvent.mState == EventState::Point) {
       // Anticipator doesn't activate - its script will just be         
-      // executed once and then reset.                                  
+      // executed once and then reset                                   
       const auto foundState1 = foundEvent.mValue->FindIt(EventState::Point);
       const auto foundState2 = foundEvent.mValue->FindIt(EventState::Begin);
       if (foundState1 or foundState2) {
          if (foundState1)
             mEvent = *foundState1.mValue;
-         if (foundState2 and mStartTime < foundState2.mValue->mTimestamp)
-            mStartTime = mNow = foundState2.mValue->mTimestamp;
+         if (foundState2 and mEvent.mTimestamp < foundState2.mValue->mTimestamp)
+            mEvent = *foundState2.mValue;
 
          mFlow.Reset();
          mFlow.Update();
@@ -125,32 +112,32 @@ bool Anticipator::Interact(const EventList& events) {
    }
    else if (mEvent.mState == EventState::Begin) {
       // Anticipator doesn't activate - its script will just be         
-      // executed once on a Begin event.                                
+      // executed once on a Begin event                                 
       const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
       if (foundState) {
-         mTimestamp = foundState.mValue->mTimestamp;
+         mEvent = *foundState.mValue;
          mFlow.Reset();
          mFlow.Update();
       }
    }
    else if (mEvent.mState == EventState::End) {
       // Anticipator doesn't activate - its script will just be         
-      // executed once on an End event.                                 
+      // executed once on an End event                                  
       const auto foundState = foundEvent.mValue->FindIt(EventState::End);
       if (foundState) {
-         mTimestamp = foundState.mValue->mTimestamp;
+         mEvent = *foundState.mValue;
          mFlow.Reset();
          mFlow.Update();
       }
    }
    else {
       // Anticipator activates on Begin event, deactivates on an End    
-      // event, and shall execute its script on each tick inbetween.    
+      // event, and shall execute its script on each tick inbetween     
       if (not mActive) {
          const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
          if (foundState) {
+            mEvent = *foundState.mValue;
             mActive = true;
-            mTimestamp = foundState.mValue->mTimestamp;
             mFlow.Reset();
          }
       }
