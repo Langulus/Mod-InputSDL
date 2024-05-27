@@ -70,7 +70,10 @@ bool InputGatherer::Update(Time deltaTime) {
 
    // React to the gathered inputs                                      
    for (auto& listener : mListeners)
-      listener.Update(deltaTime);
+      listener.Update(deltaTime, mEventQueue);
+
+   // Consume the events                                                
+   mEventQueue.Clear();
    return true;
 }
 

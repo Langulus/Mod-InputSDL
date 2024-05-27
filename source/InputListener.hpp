@@ -40,9 +40,8 @@ public:
    InputListener(InputGatherer*, const Neat&);
 
    void Create(Verb&);
-   void Update(Time) {}
+   void Update(const Time&, const EventList&) {}
    void Refresh();
-   bool Act(const Time&, const EventList&);
 };
 
 
@@ -54,20 +53,16 @@ public:
 /// should anticipate more complex patterns in the future, like gestures.     
 ///                                                                           
 struct Anticipator {
+   Anticipator(const Anticipator&) = default;
    Anticipator(Describe&&);
 
-   void Interact (const Time&, const EventList&);
-   void Trigger  (const Time&, Count);
+   bool Interact(const EventList&);
 
 public:
    // Event and state on which anticipator reacts                       
    Event mEvent;
-   // Moment of last event state change                                 
-   Time  mLastChange {};
-   // Number of triggered reactions                                     
-   Count mExecutions {};
    // Marks the anticipator as active for some moments                  
-   Count mActive {};
+   bool mActive = false;
    // Script to execute as event reaction                               
    Temporal mFlow;
 };

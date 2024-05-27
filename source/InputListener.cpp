@@ -55,43 +55,17 @@ void InputListener::Create(Verb& verb) {
    });
 }
 
-/// Controller updater                                                        
-void InputListener::Update(Time) {
-   // First interact with the accumulated events                        
-   // Interaction will activate some anticipators                       
-   Act(time.Current(), mInputQueue);
-   mInputQueue.Clear();
-
-   // Collect all active anticipators' flows                            
-   for (auto& ant : mEvents) {
-      if (ant.mActive == 0)
-         continue;
-
-      VERBOSE_INPUT("Active anticipator: " << ant.mEvent);
-      auto clonedScript { ant.mScript.Clone() };
-      Verb::ExecuteScope(mOwners, clonedScript);
-
-      // Consume mouse movement and scrolling                           
-      if (  ant.mEvent == Keys::MouseMoveHorizontal()
-         || ant.mEvent == Keys::MouseMoveVertical()
-         || ant.mEvent == Keys::MouseScrollHorizontal()
-         || ant.mEvent == Keys::MouseScrollVertical())
-         ant.mActive = 0;
+/// React on events                                                           
+///   @param deltaTime - time between Update calls                            
+///   @param events - events to react to                                      
+void InputListener::Update(const Time& deltaTime, const EventList& events) {
+   // Execute all active anticipators' scripts                          
+   for (auto& ant : mAnticipators) {
+      for (auto& ant_state : ant.mValue) {
+         if (ant_state.mValue.Interact(events))
+            ant_state.mValue.mFlow.Update(deltaTime);
+      }
    }
-}
-
-/// Inner interaction function                                                
-///   @param timeFromInit - time from initialization                          
-///   @param events - the events                                              
-bool InputListener::Act(const Time& timeFromInit, const EventList& events) {
-   // Check all anticipators                                            
-   Count reacted = 0;
-   for (auto ants : mAnticipators) {
-      ants.Interact(timeFromInit, events);
-      reacted |= ants.mActive;
-   }
-
-   return reacted != 0;
 }
 
 /// Automatically create anticipators by analyzing owner's abilities,         
@@ -120,38 +94,72 @@ void InputListener::AutoBind() {
 }
 
 
-
-
-/// Interact with the anticipator                                             
-///   @param timeFromInit - time from initialization                          
-///   @param events - the events                                              
-void Anticipator::Interact(const Time& timeFromInit, const EventList& events) {
-   // Probe every event in the first argument                           
-   for (const auto& input : events) {
-      if (mEvent.mType != input.mType)
-         continue;
-
-      if (mEvent.mState == EventState::Point) {
-         // Anticipator reacts only on point events                     
-         if (input.mState & EventState::Begin)
-            Trigger(timeFromInit, 1);
-         else
-            mActive = 0;
-      }
-      else {
-         // Anticipator reacts on explicit begin/end events             
-         if (mEvent.mState & EventState::Begin and not mActive)
-            Trigger(timeFromInit, 1);
-         else
-            mActive = 0;
-      }
-   }
+/// Descriptor constructor                                                    
+///   @param desc - descriptor                                                
+Anticipator::Anticipator(Describe&& desc) {
+   TODO();
 }
 
-/// Trigger the anticipator                                                   
-///   @param timeFromInit - time from initialization                          
-///   @param times - how many times to trigger                                
-void Anticipator::Trigger(const Time& timeFromInit, Count times) {
-   mActive += times;
-   mLastChange = timeFromInit;
+/// Interact with the anticipator                                             
+///   @param dt - delta time between frames                                   
+///   @param events - the events                                              
+bool Anticipator::Interact(const EventList& events) {
+   auto foundEvent = events.FindIt(mEvent.mType);
+   if (not foundEvent)
+      return false;
+
+   if (mEvent.mState == EventState::Point) {
+      // Anticipator doesn't activate - its script will just be         
+      // executed once and then reset.                                  
+      const auto foundState1 = foundEvent.mValue->FindIt(EventState::Point);
+      const auto foundState2 = foundEvent.mValue->FindIt(EventState::Begin);
+      if (foundState1 or foundState2) {
+         if (foundState1)
+            mEvent = *foundState1.mValue;
+         if (foundState2 and mStartTime < foundState2.mValue->mTimestamp)
+            mStartTime = mNow = foundState2.mValue->mTimestamp;
+
+         mFlow.Reset();
+         mFlow.Update();
+      }
+   }
+   else if (mEvent.mState == EventState::Begin) {
+      // Anticipator doesn't activate - its script will just be         
+      // executed once on a Begin event.                                
+      const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
+      if (foundState) {
+         mTimestamp = foundState.mValue->mTimestamp;
+         mFlow.Reset();
+         mFlow.Update();
+      }
+   }
+   else if (mEvent.mState == EventState::End) {
+      // Anticipator doesn't activate - its script will just be         
+      // executed once on an End event.                                 
+      const auto foundState = foundEvent.mValue->FindIt(EventState::End);
+      if (foundState) {
+         mTimestamp = foundState.mValue->mTimestamp;
+         mFlow.Reset();
+         mFlow.Update();
+      }
+   }
+   else {
+      // Anticipator activates on Begin event, deactivates on an End    
+      // event, and shall execute its script on each tick inbetween.    
+      if (not mActive) {
+         const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
+         if (foundState) {
+            mActive = true;
+            mTimestamp = foundState.mValue->mTimestamp;
+            mFlow.Reset();
+         }
+      }
+      else {
+         const auto foundState = foundEvent.mValue->FindIt(EventState::End);
+         if (foundState)
+            mActive = false;
+      }
+   }
+
+   return mActive;
 }
