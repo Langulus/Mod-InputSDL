@@ -25,10 +25,6 @@ private:
    // List of created input gatherers                                   
    TFactory<InputGatherer> mGatherers;
 
-   // Mouse and keyboard inputs always require a window in order to     
-   // work relatively. This window will be a small borderless one.      
-   SDL_Window* mInputFocus {};
-
 public:
     InputSDL(Runtime*, const Neat&);
    ~InputSDL();

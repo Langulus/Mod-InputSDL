@@ -18,13 +18,31 @@ InputGatherer::InputGatherer(InputSDL* producer, const Neat& descriptor)
    , ProducedFrom {producer, descriptor}
    , mListeners   {this} {
    VERBOSE_INPUT("Initializing...");
+   // Create an invisible window so that we can capture and track       
+   // the global mouse                                                  
+   mInputFocus = SDL_CreateWindow(
+      "Game Input Handle", 1, 1,
+      SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS
+   );
+
+   LANGULUS_ASSERT(mInputFocus, Construct,
+      "SDL failed to create input window. SDL_Error: ",
+      SDL_GetError()
+   );
+
+   LANGULUS_ASSERT(SDL_SetRelativeMouseMode(true) >= 0, Construct,
+      "SDL failed to set relative mouse mode. SDL_Error: ",
+      SDL_GetError()
+   );
+
    Couple(descriptor);
    VERBOSE_INPUT("Initialized");
 }
 
 /// Shutdown the module                                                       
 InputGatherer::~InputGatherer() {
-
+   if (mInputFocus)
+      SDL_DestroyWindow(mInputFocus);
 }
 
 /// Produce GUI elements in the system                                        
@@ -33,12 +51,24 @@ void InputGatherer::Create(Verb& verb) {
    mListeners.Create(verb);
 }
 
+/// Interact with all listeners                                               
+///   @param verb - interaction verb                                          
+void InputGatherer::Interact(Verb& verb) {
+   // Gather the relevant events                                        
+   verb.ForEachDeep([&](const Event& e) {
+      PushEvent(e);
+      verb.Done();
+   });
+}
+
 /// System update routine                                                     
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the system has been terminated by user request         
 bool InputGatherer::Update(Time deltaTime) {
-   //TODO gather all inputs
-   // Update all listeners elements                                     
+   Verbs::Interact interact {Events::MouseMove {relativeMouse}};
+   GetRuntime()->GetOwner()->Run(interact);
+
+   // React to the gathered inputs                                      
    for (auto& listener : mListeners)
       listener.Update(deltaTime);
    return true;

@@ -9,6 +9,7 @@
 #pragma once
 #include <Langulus.hpp>
 #include <Langulus/Input.hpp>
+#include <Math/Vector.hpp>
 
 using namespace Langulus;
 

@@ -7,13 +7,12 @@
 /// See LICENSE file, or https://www.gnu.org/licenses                         
 ///                                                                           
 #include "InputSDL.hpp"
-#include <Flow/Verbs/Interact.hpp>
-#include <Entity/Event.hpp>
-#include <Math/Vector.hpp>
 
 LANGULUS_DEFINE_MODULE(
    InputSDL, 0, "InputSDL",
-   "Raw input module, using SDL as backend", "",
+   "Raw input module, using SDL as backend - "
+   "allows for raw mouse/joystick/keyboard inputs even on console applications, "
+   "by using an external window", "",
    InputSDL, InputGatherer, InputListener
 )
 
@@ -25,39 +24,17 @@ InputSDL::InputSDL(Runtime* runtime, const Neat&)
    : Resolvable{this}
    , A::Module {runtime}
    , mGatherers{this} {
-   VERBOSE_INPUT("Initializing...");
-
    // Initialize SDL for input                                          
-   // FTXUI handles input events, but only in the context of the        
-   // console window. If we want direct mouse state access for free     
-   // look, or joystick support, we need SDL for it.                    
+   VERBOSE_INPUT("Initializing...");
    LANGULUS_ASSERT(SDL_Init(SDL_INIT_GAMEPAD) >= 0, Construct,
       "SDL failed to initialize - no input will be available. SDL_Error: ",
       SDL_GetError()
    );
-
-   // Create an invisible window so that we can capture and track       
-   // the global mouse                                                  
-   mInputFocus = SDL_CreateWindow(
-      "Game Input Handle", 1, 1,
-      SDL_WINDOW_BORDERLESS|SDL_WINDOW_INPUT_FOCUS);
-   LANGULUS_ASSERT(mInputFocus, Construct,
-      "SDL failed to create input window. SDL_Error: ",
-      SDL_GetError()
-   );
-
-   LANGULUS_ASSERT(SDL_SetRelativeMouseMode(true) >= 0, Construct,
-      "SDL failed to set relative mouse mode. SDL_Error: ",
-      SDL_GetError()
-   );
-
    VERBOSE_INPUT("Initialized");
 }
 
 ///                                                                           
 InputSDL::~InputSDL() {
-   if (mInputFocus)
-      SDL_DestroyWindow(mInputFocus);
    SDL_Quit();
 }
 
@@ -65,11 +42,11 @@ InputSDL::~InputSDL() {
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the UI requested exit                                  
 bool InputSDL::Update(Time deltaTime) {
-   // Gather inputs                                                     
+   // Gather inputs from global SDL events                              
+   // Note: SDL_GetRelativeMouseState works only if there's an SDL      
+   // window with focus.                                                
    Math::Vec2f relativeMouse;
    auto buttonState = SDL_GetRelativeMouseState(&relativeMouse.x, &relativeMouse.y);
-   Verbs::Interact interact {Events::MouseMove {relativeMouse}};
-   GetRuntime()->GetOwner()->Run(interact);
 
    // Handle events on the SDL queue                                    
    SDL_Event e;
