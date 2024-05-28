@@ -63,11 +63,14 @@ void InputGatherer::Interact(Verb& verb) {
 
 /// System update routine                                                     
 ///   @param deltaTime - time between updates                                 
+///   @param globalEvents - global list of events                             
 ///   @return false if the system has been terminated by user request         
-bool InputGatherer::Update(Time deltaTime) {
+bool InputGatherer::Update(Time deltaTime, const EventList& globalEvents) {
    // React to the gathered inputs                                      
-   for (auto& listener : mListeners)
+   for (auto& listener : mListeners) {
+      listener.Update(deltaTime, globalEvents);
       listener.Update(deltaTime, mEventQueue);
+   }
 
    // Consume the events                                                
    mEventQueue.Clear();

@@ -1,6 +1,6 @@
 ///                                                                           
-/// Langulus::Module::FTXUI                                                   
-/// Copyright (c) 2023 Dimo Markov <team@langulus.com>                        
+/// Langulus::Module::InputSDL                                                
+/// Copyright (c) 2024 Dimo Markov <team@langulus.com>                        
 /// Part of the Langulus framework, see https://langulus.com                  
 ///                                                                           
 /// Distributed under GNU General Public License v3+                          

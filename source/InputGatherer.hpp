@@ -40,6 +40,6 @@ public:
    void Create(Verb&);
    void Interact(Verb&);
 
-   bool Update(Time);
+   bool Update(Time, const EventList&);
    void Refresh();
 };
