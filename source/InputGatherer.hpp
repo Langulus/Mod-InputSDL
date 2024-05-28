@@ -28,6 +28,7 @@ struct InputGatherer final : A::InputGatherer, ProducedFrom<InputSDL> {
 private:
    // List of created input listeners                                   
    TFactory<InputListener> mListeners;
+
    // Mouse and keyboard inputs always require a window in order to     
    // work relatively. This window will be a small borderless one.      
    SDL_Window* mInputFocus {};

@@ -97,15 +97,21 @@ bool InputSDL::Update(Time deltaTime) {
          break;
       case SDL_EVENT_WINDOW_FOCUS_LOST:
          Logger::Input("Focus lost");
-         TODO();
+         Events::WindowUnfocus newEvent;
+         for (auto& gatherer : mGatherers)
+            gatherer.PushEvent(newEvent);
          break;
       case SDL_EVENT_WINDOW_FOCUS_GAINED:
          Logger::Input("Focus gained");
-         TODO();
+         Events::WindowFocus newEvent;
+         for (auto& gatherer : mGatherers)
+            gatherer.PushEvent(newEvent);
          break;
       case SDL_EVENT_KEY_DOWN:
          Logger::Input("Keyboard button down");
-         TODO();
+         e.key
+         for (auto& gatherer : mGatherers)
+            gatherer.PushEvent(Events::WindowFocus {});
          break;
       case SDL_EVENT_KEY_UP:
          Logger::Input("Keyboard button up");

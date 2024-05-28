@@ -21,7 +21,7 @@ InputGatherer::InputGatherer(InputSDL* producer, const Neat& descriptor)
    // Create an invisible window so that we can capture and track       
    // the global mouse                                                  
    mInputFocus = SDL_CreateWindow(
-      "Game Input Handle", 1, 1,
+      "Input Handle", 1, 1,
       SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS
    );
 
