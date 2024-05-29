@@ -3,8 +3,7 @@
 /// Copyright (c) 2024 Dimo Markov <team@langulus.com>                        
 /// Part of the Langulus framework, see https://langulus.com                  
 ///                                                                           
-/// Distributed under GNU General Public License v3+                          
-/// See LICENSE file, or https://www.gnu.org/licenses                         
+/// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include "InputSDL.hpp"
 
@@ -27,6 +26,9 @@ InputSDL::InputSDL(Runtime* runtime, const Neat&)
    : Resolvable{this}
    , A::Module {runtime}
    , mGatherers{this} {
+   // Reflect all event tokens                                          
+   Langulus::RegisterEvents();
+
    // Initialize SDL for input                                          
    VERBOSE_INPUT("Initializing...");
    LANGULUS_ASSERT(SDL_Init(SDL_INIT_GAMEPAD) >= 0, Construct,
@@ -256,7 +258,7 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_TAB:           return MetaOf<Keys::Tab>();   
    case SDL_SCANCODE_SPACE:         return MetaOf<Keys::Space>(); 
    case SDL_SCANCODE_MINUS:         return MetaOf<Keys::Minus>(); 
-   case SDL_SCANCODE_EQUALS:        TODO(); //missing
+   case SDL_SCANCODE_EQUALS:        TODO(); return {}; //missing
    case SDL_SCANCODE_LEFTBRACKET:   return MetaOf<Keys::LeftBracket>(); 
    case SDL_SCANCODE_RIGHTBRACKET:  return MetaOf<Keys::RightBracket>();
    case SDL_SCANCODE_BACKSLASH:
@@ -316,8 +318,8 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_KP_PERIOD:     return MetaOf<Keys::NumpadDecimal>();  
 
    case SDL_SCANCODE_NONUSBACKSLASH:return MetaOf<Keys::Hack>();           
-   case SDL_SCANCODE_APPLICATION:   TODO(); //missing
-   case SDL_SCANCODE_POWER:         TODO(); //missing
+   case SDL_SCANCODE_APPLICATION:   TODO(); return {}; //missing
+   case SDL_SCANCODE_POWER:         TODO(); return {}; //missing
    case SDL_SCANCODE_KP_EQUALS:     return MetaOf<Keys::NumpadEqual>();    
    case SDL_SCANCODE_F13:           return MetaOf<Keys::F13>();            
    case SDL_SCANCODE_F14:           return MetaOf<Keys::F14>();            
@@ -332,153 +334,153 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_F23:           return MetaOf<Keys::F23>();            
    case SDL_SCANCODE_F24:           return MetaOf<Keys::F24>();            
 
-   case SDL_SCANCODE_EXECUTE:             TODO(); //missing
-   case SDL_SCANCODE_HELP:                TODO(); //missing
-   case SDL_SCANCODE_MENU:                TODO(); //missing
-   case SDL_SCANCODE_SELECT:              TODO(); //missing
-   case SDL_SCANCODE_STOP:                TODO(); //missing
-   case SDL_SCANCODE_AGAIN:               TODO(); //missing
-   case SDL_SCANCODE_UNDO:                TODO(); //missing
-   case SDL_SCANCODE_CUT:                 TODO(); //missing
-   case SDL_SCANCODE_COPY:                TODO(); //missing
-   case SDL_SCANCODE_PASTE:               TODO(); //missing
-   case SDL_SCANCODE_FIND:                TODO(); //missing
-   case SDL_SCANCODE_MUTE:                TODO(); //missing
-   case SDL_SCANCODE_VOLUMEUP:            TODO(); //missing
-   case SDL_SCANCODE_VOLUMEDOWN:          TODO(); //missing
-   case SDL_SCANCODE_KP_COMMA:            TODO(); //missing
-   case SDL_SCANCODE_KP_EQUALSAS400:      TODO(); //missing
+   case SDL_SCANCODE_EXECUTE:             TODO(); return {}; //missing
+   case SDL_SCANCODE_HELP:                TODO(); return {}; //missing
+   case SDL_SCANCODE_MENU:                TODO(); return {}; //missing
+   case SDL_SCANCODE_SELECT:              TODO(); return {}; //missing
+   case SDL_SCANCODE_STOP:                TODO(); return {}; //missing
+   case SDL_SCANCODE_AGAIN:               TODO(); return {}; //missing
+   case SDL_SCANCODE_UNDO:                TODO(); return {}; //missing
+   case SDL_SCANCODE_CUT:                 TODO(); return {}; //missing
+   case SDL_SCANCODE_COPY:                TODO(); return {}; //missing
+   case SDL_SCANCODE_PASTE:               TODO(); return {}; //missing
+   case SDL_SCANCODE_FIND:                TODO(); return {}; //missing
+   case SDL_SCANCODE_MUTE:                TODO(); return {}; //missing
+   case SDL_SCANCODE_VOLUMEUP:            TODO(); return {}; //missing
+   case SDL_SCANCODE_VOLUMEDOWN:          TODO(); return {}; //missing
+   case SDL_SCANCODE_KP_COMMA:            TODO(); return {}; //missing
+   case SDL_SCANCODE_KP_EQUALSAS400:      TODO(); return {}; //missing
 
-   case SDL_SCANCODE_INTERNATIONAL1:      TODO(); /**< used on Asian keyboards, see footnotes in USB doc */
-   case SDL_SCANCODE_INTERNATIONAL2:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL3:      TODO(); /**< Yen */
-   case SDL_SCANCODE_INTERNATIONAL4:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL5:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL6:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL7:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL8:      TODO();
-   case SDL_SCANCODE_INTERNATIONAL9:      TODO();
+   case SDL_SCANCODE_INTERNATIONAL1:      TODO(); return {}; /**< used on Asian keyboards, see footnotes in USB doc */
+   case SDL_SCANCODE_INTERNATIONAL2:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL3:      TODO(); return {}; /**< Yen */
+   case SDL_SCANCODE_INTERNATIONAL4:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL5:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL6:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL7:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL8:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL9:      TODO(); return {}; 
 
-   case SDL_SCANCODE_LANG1:               TODO(); /**< Hangul/English toggle */
-   case SDL_SCANCODE_LANG2:               TODO(); /**< Hanja conversion */
-   case SDL_SCANCODE_LANG3:               TODO(); /**< Katakana */
-   case SDL_SCANCODE_LANG4:               TODO(); /**< Hiragana */
-   case SDL_SCANCODE_LANG5:               TODO(); /**< Zenkaku/Hankaku */
-   case SDL_SCANCODE_LANG6:               TODO(); /**< reserved */
-   case SDL_SCANCODE_LANG7:               TODO(); /**< reserved */
-   case SDL_SCANCODE_LANG8:               TODO(); /**< reserved */
-   case SDL_SCANCODE_LANG9:               TODO(); /**< reserved */
+   case SDL_SCANCODE_LANG1:               TODO(); return {}; /**< Hangul/English toggle */
+   case SDL_SCANCODE_LANG2:               TODO(); return {}; /**< Hanja conversion */
+   case SDL_SCANCODE_LANG3:               TODO(); return {}; /**< Katakana */
+   case SDL_SCANCODE_LANG4:               TODO(); return {}; /**< Hiragana */
+   case SDL_SCANCODE_LANG5:               TODO(); return {}; /**< Zenkaku/Hankaku */
+   case SDL_SCANCODE_LANG6:               TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG7:               TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG8:               TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG9:               TODO(); return {}; /**< reserved */
 
-   case SDL_SCANCODE_ALTERASE:            TODO(); /**< Erase-Eaze */
-   case SDL_SCANCODE_SYSREQ:              TODO();
-   case SDL_SCANCODE_CANCEL:              TODO(); /**< AC Cancel */
-   case SDL_SCANCODE_CLEAR:               TODO();
-   case SDL_SCANCODE_PRIOR:               TODO();
-   case SDL_SCANCODE_RETURN2:             TODO();
-   case SDL_SCANCODE_SEPARATOR:           TODO();
-   case SDL_SCANCODE_OUT:                 TODO();
-   case SDL_SCANCODE_OPER:                TODO();
-   case SDL_SCANCODE_CLEARAGAIN:          TODO();
-   case SDL_SCANCODE_CRSEL:               TODO();
-   case SDL_SCANCODE_EXSEL:               TODO();
+   case SDL_SCANCODE_ALTERASE:            TODO(); return {}; /**< Erase-Eaze */
+   case SDL_SCANCODE_SYSREQ:              TODO(); return {}; 
+   case SDL_SCANCODE_CANCEL:              TODO(); return {}; /**< AC Cancel */
+   case SDL_SCANCODE_CLEAR:               TODO(); return {}; 
+   case SDL_SCANCODE_PRIOR:               TODO(); return {}; 
+   case SDL_SCANCODE_RETURN2:             TODO(); return {}; 
+   case SDL_SCANCODE_SEPARATOR:           TODO(); return {}; 
+   case SDL_SCANCODE_OUT:                 TODO(); return {}; 
+   case SDL_SCANCODE_OPER:                TODO(); return {}; 
+   case SDL_SCANCODE_CLEARAGAIN:          TODO(); return {}; 
+   case SDL_SCANCODE_CRSEL:               TODO(); return {}; 
+   case SDL_SCANCODE_EXSEL:               TODO(); return {}; 
 
-   case SDL_SCANCODE_KP_00:               TODO();
-   case SDL_SCANCODE_KP_000:              TODO();
-   case SDL_SCANCODE_THOUSANDSSEPARATOR:  TODO();
-   case SDL_SCANCODE_DECIMALSEPARATOR:    TODO();
-   case SDL_SCANCODE_CURRENCYUNIT:        TODO();
-   case SDL_SCANCODE_CURRENCYSUBUNIT:     TODO();
-   case SDL_SCANCODE_KP_LEFTPAREN:        TODO();
-   case SDL_SCANCODE_KP_RIGHTPAREN:       TODO();
-   case SDL_SCANCODE_KP_LEFTBRACE:        TODO();
-   case SDL_SCANCODE_KP_RIGHTBRACE:       TODO();
-   case SDL_SCANCODE_KP_TAB:              TODO();
-   case SDL_SCANCODE_KP_BACKSPACE:        TODO();
-   case SDL_SCANCODE_KP_A:                TODO();
-   case SDL_SCANCODE_KP_B:                TODO();
-   case SDL_SCANCODE_KP_C:                TODO();
-   case SDL_SCANCODE_KP_D:                TODO();
-   case SDL_SCANCODE_KP_E:                TODO();
-   case SDL_SCANCODE_KP_F:                TODO();
-   case SDL_SCANCODE_KP_XOR:              TODO();
-   case SDL_SCANCODE_KP_POWER:            TODO();
-   case SDL_SCANCODE_KP_PERCENT:          TODO();
-   case SDL_SCANCODE_KP_LESS:             TODO();
-   case SDL_SCANCODE_KP_GREATER:          TODO();
-   case SDL_SCANCODE_KP_AMPERSAND:        TODO();
-   case SDL_SCANCODE_KP_DBLAMPERSAND:     TODO();
-   case SDL_SCANCODE_KP_VERTICALBAR:      TODO();
-   case SDL_SCANCODE_KP_DBLVERTICALBAR:   TODO();
-   case SDL_SCANCODE_KP_COLON:            TODO();
-   case SDL_SCANCODE_KP_HASH:             TODO();
-   case SDL_SCANCODE_KP_SPACE:            TODO();
-   case SDL_SCANCODE_KP_AT:               TODO();
-   case SDL_SCANCODE_KP_EXCLAM:           TODO();
-   case SDL_SCANCODE_KP_MEMSTORE:         TODO();
-   case SDL_SCANCODE_KP_MEMRECALL:        TODO();
-   case SDL_SCANCODE_KP_MEMCLEAR:         TODO();
-   case SDL_SCANCODE_KP_MEMADD:           TODO();
-   case SDL_SCANCODE_KP_MEMSUBTRACT:      TODO();
-   case SDL_SCANCODE_KP_MEMMULTIPLY:      TODO();
-   case SDL_SCANCODE_KP_MEMDIVIDE:        TODO();
-   case SDL_SCANCODE_KP_PLUSMINUS:        TODO();
-   case SDL_SCANCODE_KP_CLEAR:            TODO();
-   case SDL_SCANCODE_KP_CLEARENTRY:       TODO();
-   case SDL_SCANCODE_KP_BINARY:           TODO();
-   case SDL_SCANCODE_KP_OCTAL:            TODO();
-   case SDL_SCANCODE_KP_DECIMAL:          TODO();
-   case SDL_SCANCODE_KP_HEXADECIMAL:      TODO();
+   case SDL_SCANCODE_KP_00:               TODO(); return {}; 
+   case SDL_SCANCODE_KP_000:              TODO(); return {}; 
+   case SDL_SCANCODE_THOUSANDSSEPARATOR:  TODO(); return {}; 
+   case SDL_SCANCODE_DECIMALSEPARATOR:    TODO(); return {}; 
+   case SDL_SCANCODE_CURRENCYUNIT:        TODO(); return {}; 
+   case SDL_SCANCODE_CURRENCYSUBUNIT:     TODO(); return {}; 
+   case SDL_SCANCODE_KP_LEFTPAREN:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_RIGHTPAREN:       TODO(); return {}; 
+   case SDL_SCANCODE_KP_LEFTBRACE:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_RIGHTBRACE:       TODO(); return {}; 
+   case SDL_SCANCODE_KP_TAB:              TODO(); return {}; 
+   case SDL_SCANCODE_KP_BACKSPACE:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_A:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_B:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_C:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_D:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_E:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_F:                TODO(); return {}; 
+   case SDL_SCANCODE_KP_XOR:              TODO(); return {}; 
+   case SDL_SCANCODE_KP_POWER:            TODO(); return {}; 
+   case SDL_SCANCODE_KP_PERCENT:          TODO(); return {}; 
+   case SDL_SCANCODE_KP_LESS:             TODO(); return {}; 
+   case SDL_SCANCODE_KP_GREATER:          TODO(); return {}; 
+   case SDL_SCANCODE_KP_AMPERSAND:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_DBLAMPERSAND:     TODO(); return {}; 
+   case SDL_SCANCODE_KP_VERTICALBAR:      TODO(); return {}; 
+   case SDL_SCANCODE_KP_DBLVERTICALBAR:   TODO(); return {}; 
+   case SDL_SCANCODE_KP_COLON:            TODO(); return {}; 
+   case SDL_SCANCODE_KP_HASH:             TODO(); return {}; 
+   case SDL_SCANCODE_KP_SPACE:            TODO(); return {}; 
+   case SDL_SCANCODE_KP_AT:               TODO(); return {}; 
+   case SDL_SCANCODE_KP_EXCLAM:           TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMSTORE:         TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMRECALL:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMCLEAR:         TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMADD:           TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMSUBTRACT:      TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMMULTIPLY:      TODO(); return {}; 
+   case SDL_SCANCODE_KP_MEMDIVIDE:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_PLUSMINUS:        TODO(); return {}; 
+   case SDL_SCANCODE_KP_CLEAR:            TODO(); return {}; 
+   case SDL_SCANCODE_KP_CLEARENTRY:       TODO(); return {}; 
+   case SDL_SCANCODE_KP_BINARY:           TODO(); return {}; 
+   case SDL_SCANCODE_KP_OCTAL:            TODO(); return {}; 
+   case SDL_SCANCODE_KP_DECIMAL:          TODO(); return {}; 
+   case SDL_SCANCODE_KP_HEXADECIMAL:      TODO(); return {}; 
 
    case SDL_SCANCODE_LCTRL:            return MetaOf<Keys::LeftControl>(); 
    case SDL_SCANCODE_LSHIFT:           return MetaOf<Keys::LeftShift>();   
    case SDL_SCANCODE_LALT:             return MetaOf<Keys::LeftAlt>();     
-   case SDL_SCANCODE_LGUI:             TODO(); //missing
+   case SDL_SCANCODE_LGUI:             TODO(); return {}; //missing
    case SDL_SCANCODE_RCTRL:            return MetaOf<Keys::RightControl>();
    case SDL_SCANCODE_RSHIFT:           return MetaOf<Keys::RightShift>();  
    case SDL_SCANCODE_RALT:             return MetaOf<Keys::RightAlt>();    
-   case SDL_SCANCODE_RGUI:             TODO(); //missing
+   case SDL_SCANCODE_RGUI:             TODO(); return {}; //missing
 
-   case SDL_SCANCODE_MODE:             TODO(); //missing
+   case SDL_SCANCODE_MODE:             TODO(); return {}; //missing
 
-   case SDL_SCANCODE_AUDIONEXT:        TODO(); //missing
-   case SDL_SCANCODE_AUDIOPREV:        TODO(); //missing
-   case SDL_SCANCODE_AUDIOSTOP:        TODO(); //missing
-   case SDL_SCANCODE_AUDIOPLAY:        TODO(); //missing
-   case SDL_SCANCODE_AUDIOMUTE:        TODO(); //missing
-   case SDL_SCANCODE_MEDIASELECT:      TODO(); //missing
-   case SDL_SCANCODE_WWW:              TODO(); //missing
-   case SDL_SCANCODE_MAIL:             TODO(); //missing
-   case SDL_SCANCODE_CALCULATOR:       TODO(); //missing
-   case SDL_SCANCODE_COMPUTER:         TODO(); //missing
-   case SDL_SCANCODE_AC_SEARCH:        TODO(); //missing
-   case SDL_SCANCODE_AC_HOME:          TODO(); //missing
-   case SDL_SCANCODE_AC_BACK:          TODO(); //missing
-   case SDL_SCANCODE_AC_FORWARD:       TODO(); //missing
-   case SDL_SCANCODE_AC_STOP:          TODO(); //missing
-   case SDL_SCANCODE_AC_REFRESH:       TODO(); //missing
-   case SDL_SCANCODE_AC_BOOKMARKS:     TODO(); //missing
+   case SDL_SCANCODE_AUDIONEXT:        TODO(); return {}; //missing
+   case SDL_SCANCODE_AUDIOPREV:        TODO(); return {}; //missing
+   case SDL_SCANCODE_AUDIOSTOP:        TODO(); return {}; //missing
+   case SDL_SCANCODE_AUDIOPLAY:        TODO(); return {}; //missing
+   case SDL_SCANCODE_AUDIOMUTE:        TODO(); return {}; //missing
+   case SDL_SCANCODE_MEDIASELECT:      TODO(); return {}; //missing
+   case SDL_SCANCODE_WWW:              TODO(); return {}; //missing
+   case SDL_SCANCODE_MAIL:             TODO(); return {}; //missing
+   case SDL_SCANCODE_CALCULATOR:       TODO(); return {}; //missing
+   case SDL_SCANCODE_COMPUTER:         TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_SEARCH:        TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_HOME:          TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_BACK:          TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_FORWARD:       TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_STOP:          TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_REFRESH:       TODO(); return {}; //missing
+   case SDL_SCANCODE_AC_BOOKMARKS:     TODO(); return {}; //missing
 
-   case SDL_SCANCODE_BRIGHTNESSDOWN:   TODO(); // missing
-   case SDL_SCANCODE_BRIGHTNESSUP:     TODO(); // missing
-   case SDL_SCANCODE_DISPLAYSWITCH:    TODO(); // missing
-   case SDL_SCANCODE_KBDILLUMTOGGLE:   TODO(); // missing
-   case SDL_SCANCODE_KBDILLUMDOWN:     TODO(); // missing
-   case SDL_SCANCODE_KBDILLUMUP:       TODO(); // missing
-   case SDL_SCANCODE_EJECT:            TODO(); // missing
-   case SDL_SCANCODE_SLEEP:            TODO(); // missing
-   case SDL_SCANCODE_APP1:             TODO(); // missing
-   case SDL_SCANCODE_APP2:             TODO(); // missing
+   case SDL_SCANCODE_BRIGHTNESSDOWN:   TODO(); return {}; // missing
+   case SDL_SCANCODE_BRIGHTNESSUP:     TODO(); return {}; // missing
+   case SDL_SCANCODE_DISPLAYSWITCH:    TODO(); return {}; // missing
+   case SDL_SCANCODE_KBDILLUMTOGGLE:   TODO(); return {}; // missing
+   case SDL_SCANCODE_KBDILLUMDOWN:     TODO(); return {}; // missing
+   case SDL_SCANCODE_KBDILLUMUP:       TODO(); return {}; // missing
+   case SDL_SCANCODE_EJECT:            TODO(); return {}; // missing
+   case SDL_SCANCODE_SLEEP:            TODO(); return {}; // missing
+   case SDL_SCANCODE_APP1:             TODO(); return {}; // missing
+   case SDL_SCANCODE_APP2:             TODO(); return {}; // missing
 
-   case SDL_SCANCODE_AUDIOREWIND:      TODO(); // missing
-   case SDL_SCANCODE_AUDIOFASTFORWARD: TODO(); // missing
-   case SDL_SCANCODE_SOFTLEFT:         TODO(); // missing
-   case SDL_SCANCODE_SOFTRIGHT:        TODO(); // missing
-   case SDL_SCANCODE_CALL:             TODO(); // missing
-   case SDL_SCANCODE_ENDCALL:          TODO(); // missing
+   case SDL_SCANCODE_AUDIOREWIND:      TODO(); return {}; // missing
+   case SDL_SCANCODE_AUDIOFASTFORWARD: TODO(); return {}; // missing
+   case SDL_SCANCODE_SOFTLEFT:         TODO(); return {}; // missing
+   case SDL_SCANCODE_SOFTRIGHT:        TODO(); return {}; // missing
+   case SDL_SCANCODE_CALL:             TODO(); return {}; // missing
+   case SDL_SCANCODE_ENDCALL:          TODO(); return {}; // missing
    default:
       LANGULUS_OOPS(Meta, "Missing keyboard event");
+      return {};
    }
-   return {};
 }
 
 DMeta TranslateMouse(Uint8 e) {
@@ -493,5 +495,6 @@ DMeta TranslateMouse(Uint8 e) {
    case 7: return MetaOf<Keys::Mouse8>();
    default:
       LANGULUS_OOPS(Meta, "Missing mouse button event");
+      return {};
    }
 }

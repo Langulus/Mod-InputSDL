@@ -3,8 +3,7 @@
 /// Copyright (c) 2024 Dimo Markov <team@langulus.com>                        
 /// Part of the Langulus framework, see https://langulus.com                  
 ///                                                                           
-/// Distributed under GNU General Public License v3+                          
-/// See LICENSE file, or https://www.gnu.org/licenses                         
+/// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #pragma once
 #include "Common.hpp"
@@ -53,16 +52,20 @@ public:
 /// should anticipate more complex patterns in the future, like gestures.     
 ///                                                                           
 struct Anticipator {
-   Anticipator(const Anticipator&) = default;
-   Anticipator(Describe&&);
+   LANGULUS_CONVERTS_TO(Text);
 
-   bool Interact(const EventList&);
-
-public:
    // Event and state on which anticipator reacts                       
    Event mEvent;
    // Marks the anticipator as active for some moments                  
    bool mActive = false;
    // Script to execute as event reaction                               
    Temporal mFlow;
+
+public:
+   Anticipator(const Anticipator&) = default;
+   Anticipator(Describe&&);
+
+   bool Interact(const EventList&);
+
+   explicit operator Text() const;
 };

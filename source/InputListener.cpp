@@ -3,8 +3,7 @@
 /// Copyright (c) 2024 Dimo Markov <team@langulus.com>                        
 /// Part of the Langulus framework, see https://langulus.com                  
 ///                                                                           
-/// Distributed under GNU General Public License v3+                          
-/// See LICENSE file, or https://www.gnu.org/licenses                         
+/// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include "InputListener.hpp"
 #include "InputSDL.hpp"
@@ -84,7 +83,19 @@ void InputListener::AutoBind() {
 /// Descriptor constructor                                                    
 ///   @param desc - descriptor                                                
 Anticipator::Anticipator(Describe&& desc) {
-   TODO();
+   // What event are we anticipating?                                   
+   LANGULUS_ASSERT(
+         desc->ExtractData(mEvent)
+      or desc->ExtractData(mEvent.mType),
+      Construct, "Invalid event for anticipator from: ", *desc);
+
+   // Optional state override                                           
+   desc->ExtractData(mEvent.mState);
+
+   // How do we react on trigger?                                       
+   Code code;
+   LANGULUS_ASSERT(desc->ExtractData(code),
+      Construct, "Missing script for anticipator from: ", *desc);
 }
 
 /// Interact with the anticipator                                             
@@ -149,4 +160,8 @@ bool Anticipator::Interact(const EventList& events) {
    }
 
    return mActive;
+}
+
+Anticipator::operator Text() const {
+   return Text::TemplateRt("{}({}, {})", MetaOf<Anticipator>(), mEvent, mFlow);
 }
