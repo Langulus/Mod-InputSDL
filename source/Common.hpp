@@ -16,8 +16,13 @@ struct InputSDL;
 struct InputGatherer;
 struct InputListener;
 
-#define VERBOSE_INPUT(...)      Logger::Verbose(Self(), __VA_ARGS__)
-#define VERBOSE_INPUT_TAB(...)  const auto tab = Logger::Verbose(Self(), __VA_ARGS__, Logger::Tabs {})
+#if 0
+   #define VERBOSE_INPUT(...)      Logger::Verbose(Self(), __VA_ARGS__)
+   #define VERBOSE_INPUT_TAB(...)  const auto tab = Logger::Verbose(Self(), __VA_ARGS__, Logger::Tabs {})
+#else
+   #define VERBOSE_INPUT(...)      LANGULUS(NOOP)
+   #define VERBOSE_INPUT_TAB(...)  LANGULUS(NOOP)
+#endif
 
 /// Include SDL                                                               
 #include <SDL3/SDL.h>
