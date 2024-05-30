@@ -24,10 +24,17 @@ InputGatherer::InputGatherer(InputSDL* producer, const Neat& descriptor)
       SDL_WINDOW_BORDERLESS | SDL_WINDOW_INPUT_FOCUS
    );
 
-   LANGULUS_ASSERT(mInputFocus, Construct,
-      "SDL failed to create input window. SDL_Error: ",
-      SDL_GetError()
-   );
+   if (not mInputFocus) {
+      // We're probably running without a desktop environment           
+      Logger::Warning(Self(),
+         "SDL failed to create input window - SDL won't be used for input. "
+         "The gatherer can still collect input from other modules, like FTXUI or GLFW. "
+         "SDL_Error: ", SDL_GetError()
+      );
+      Couple(descriptor);
+      VERBOSE_INPUT("Initialized");
+      return;
+   }
 
    LANGULUS_ASSERT(SDL_SetRelativeMouseMode(true) >= 0, Construct,
       "SDL failed to set relative mouse mode. SDL_Error: ",
