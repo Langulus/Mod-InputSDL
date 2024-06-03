@@ -68,4 +68,7 @@ public:
    bool Interact(const EventList&);
 
    explicit operator Text() const;
+
+protected:
+   Text Self() const { return operator Text() + ": "; }
 };

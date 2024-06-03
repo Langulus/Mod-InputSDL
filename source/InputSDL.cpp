@@ -50,33 +50,34 @@ bool InputSDL::Update(Time deltaTime) {
    Math::Vec2f mouseMovement;
    Math::Vec2f mouseScroll;
    SDL_Event e;
+
    while (SDL_PollEvent(&e) != 0) {
       switch (e.type) {
       case SDL_EVENT_QUIT:
          // User requests quit                                          
          return false;
       case SDL_EVENT_JOYSTICK_AXIS_MOTION:
-         Logger::Input("Joystick axis motion");
+         VERBOSE_INPUT("Joystick axis motion");
          TODO();
          break;
       case SDL_EVENT_JOYSTICK_BALL_MOTION:
-         Logger::Input("Joystick ball motion");
+         VERBOSE_INPUT("Joystick ball motion");
          TODO();
          break;
       case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
-         Logger::Input("Joystick button down");
+         VERBOSE_INPUT("Joystick button down");
          TODO();
          break;
       case SDL_EVENT_JOYSTICK_BUTTON_UP:
-         Logger::Input("Joystick button up");
+         VERBOSE_INPUT("Joystick button up");
          TODO();
          break;
       case SDL_EVENT_JOYSTICK_HAT_MOTION:
-         Logger::Input("Joystick hat motion");
+         VERBOSE_INPUT("Joystick hat motion");
          TODO();
          break;
       case SDL_EVENT_CLIPBOARD_UPDATE:
-         Logger::Input("Clipboard change detected");
+         VERBOSE_INPUT("Clipboard change detected");
          TODO();
          break;
       case SDL_EVENT_MOUSE_MOTION:
@@ -94,7 +95,7 @@ bool InputSDL::Update(Time deltaTime) {
          Event newEvent;
          newEvent.mType = TranslateMouse(e.button.button);
          newEvent.mState = EventState::Begin;
-         Logger::Input("Mouse button pressed: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Mouse button pressed: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }
@@ -103,19 +104,19 @@ bool InputSDL::Update(Time deltaTime) {
          Event newEvent;
          newEvent.mType = TranslateMouse(e.button.button);
          newEvent.mState = EventState::End;
-         Logger::Input("Mouse button released: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Mouse button released: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }
       case SDL_EVENT_WINDOW_FOCUS_LOST: {
          // Input focus lost - pause game, etc.?                        
-         Logger::Input("Focus lost");
+         VERBOSE_INPUT("Focus lost");
          PushEvent(Events::WindowUnfocus {});
          break;
       }
       case SDL_EVENT_WINDOW_FOCUS_GAINED: {
          // Input focus gained - resume game?                           
-         Logger::Input("Focus gained");
+         VERBOSE_INPUT("Focus gained");
          PushEvent(Events::WindowFocus {});
          break;
       }
@@ -124,7 +125,7 @@ bool InputSDL::Update(Time deltaTime) {
          Event newEvent;
          newEvent.mType = TranslateKey(e.key.keysym.scancode);
          newEvent.mState = EventState::Begin;
-         Logger::Input("Keyboard button pressed: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Keyboard button pressed: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }
@@ -133,7 +134,7 @@ bool InputSDL::Update(Time deltaTime) {
          Event newEvent;
          newEvent.mType = TranslateKey(e.key.keysym.scancode);
          newEvent.mState = EventState::End;
-         Logger::Input("Keyboard button released: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Keyboard button released: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }}
@@ -141,13 +142,13 @@ bool InputSDL::Update(Time deltaTime) {
 
    // Dispatch gathered mouse movement events                           
    if (mouseMovement.x) {
-      Logger::Input("Mouse moved horizontally: ", *mouseMovement.x);
+      VERBOSE_INPUT("Mouse moved horizontally: ", *mouseMovement.x);
       PushEvent(Events::MouseMoveHorizontal {
          EventState::Point, *mouseScroll.x});
    }
 
    if (mouseMovement.y) {
-      Logger::Input("Mouse moved vertically: ", *mouseMovement.y);
+      VERBOSE_INPUT("Mouse moved vertically: ", *mouseMovement.y);
       PushEvent(Events::MouseMoveVertical {
          EventState::Point, *mouseScroll.y});
    }
@@ -159,13 +160,13 @@ bool InputSDL::Update(Time deltaTime) {
    
    // Dispatch gathered mouse scroll events                             
    if (mouseScroll.x) {
-      Logger::Input("Mouse scrolled horizontally: ", *mouseScroll.x);
+      VERBOSE_INPUT("Mouse scrolled horizontally: ", *mouseScroll.x);
       PushEvent(Events::MouseScrollHorizontal {
          EventState::Point, *mouseScroll.x});
    }
 
    if (mouseScroll.y) {
-      Logger::Input("Mouse scrolled vertically: ", *mouseScroll.y);
+      VERBOSE_INPUT("Mouse scrolled vertically: ", *mouseScroll.y);
       PushEvent(Events::MouseScrollVertical {
          EventState::Point, *mouseScroll.y});
    }
@@ -334,55 +335,55 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_F23:           return MetaOf<Keys::F23>();            
    case SDL_SCANCODE_F24:           return MetaOf<Keys::F24>();            
 
-   case SDL_SCANCODE_EXECUTE:             TODO(); return {}; //missing
-   case SDL_SCANCODE_HELP:                TODO(); return {}; //missing
-   case SDL_SCANCODE_MENU:                TODO(); return {}; //missing
-   case SDL_SCANCODE_SELECT:              TODO(); return {}; //missing
-   case SDL_SCANCODE_STOP:                TODO(); return {}; //missing
-   case SDL_SCANCODE_AGAIN:               TODO(); return {}; //missing
-   case SDL_SCANCODE_UNDO:                TODO(); return {}; //missing
-   case SDL_SCANCODE_CUT:                 TODO(); return {}; //missing
-   case SDL_SCANCODE_COPY:                TODO(); return {}; //missing
-   case SDL_SCANCODE_PASTE:               TODO(); return {}; //missing
-   case SDL_SCANCODE_FIND:                TODO(); return {}; //missing
-   case SDL_SCANCODE_MUTE:                TODO(); return {}; //missing
-   case SDL_SCANCODE_VOLUMEUP:            TODO(); return {}; //missing
-   case SDL_SCANCODE_VOLUMEDOWN:          TODO(); return {}; //missing
-   case SDL_SCANCODE_KP_COMMA:            TODO(); return {}; //missing
-   case SDL_SCANCODE_KP_EQUALSAS400:      TODO(); return {}; //missing
+   case SDL_SCANCODE_EXECUTE:       TODO(); return {}; //missing
+   case SDL_SCANCODE_HELP:          TODO(); return {}; //missing
+   case SDL_SCANCODE_MENU:          TODO(); return {}; //missing
+   case SDL_SCANCODE_SELECT:        TODO(); return {}; //missing
+   case SDL_SCANCODE_STOP:          TODO(); return {}; //missing
+   case SDL_SCANCODE_AGAIN:         TODO(); return {}; //missing
+   case SDL_SCANCODE_UNDO:          TODO(); return {}; //missing
+   case SDL_SCANCODE_CUT:           TODO(); return {}; //missing
+   case SDL_SCANCODE_COPY:          TODO(); return {}; //missing
+   case SDL_SCANCODE_PASTE:         TODO(); return {}; //missing
+   case SDL_SCANCODE_FIND:          TODO(); return {}; //missing
+   case SDL_SCANCODE_MUTE:          TODO(); return {}; //missing
+   case SDL_SCANCODE_VOLUMEUP:      TODO(); return {}; //missing
+   case SDL_SCANCODE_VOLUMEDOWN:    TODO(); return {}; //missing
+   case SDL_SCANCODE_KP_COMMA:      TODO(); return {}; //missing
+   case SDL_SCANCODE_KP_EQUALSAS400:TODO(); return {}; //missing
 
-   case SDL_SCANCODE_INTERNATIONAL1:      TODO(); return {}; /**< used on Asian keyboards, see footnotes in USB doc */
-   case SDL_SCANCODE_INTERNATIONAL2:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL3:      TODO(); return {}; /**< Yen */
-   case SDL_SCANCODE_INTERNATIONAL4:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL5:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL6:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL7:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL8:      TODO(); return {}; 
-   case SDL_SCANCODE_INTERNATIONAL9:      TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL1:TODO(); return {}; /**< used on Asian keyboards, see footnotes in USB doc */
+   case SDL_SCANCODE_INTERNATIONAL2:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL3:TODO(); return {}; /**< Yen */
+   case SDL_SCANCODE_INTERNATIONAL4:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL5:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL6:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL7:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL8:TODO(); return {}; 
+   case SDL_SCANCODE_INTERNATIONAL9:TODO(); return {}; 
 
-   case SDL_SCANCODE_LANG1:               TODO(); return {}; /**< Hangul/English toggle */
-   case SDL_SCANCODE_LANG2:               TODO(); return {}; /**< Hanja conversion */
-   case SDL_SCANCODE_LANG3:               TODO(); return {}; /**< Katakana */
-   case SDL_SCANCODE_LANG4:               TODO(); return {}; /**< Hiragana */
-   case SDL_SCANCODE_LANG5:               TODO(); return {}; /**< Zenkaku/Hankaku */
-   case SDL_SCANCODE_LANG6:               TODO(); return {}; /**< reserved */
-   case SDL_SCANCODE_LANG7:               TODO(); return {}; /**< reserved */
-   case SDL_SCANCODE_LANG8:               TODO(); return {}; /**< reserved */
-   case SDL_SCANCODE_LANG9:               TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG1:         TODO(); return {}; /**< Hangul/English toggle */
+   case SDL_SCANCODE_LANG2:         TODO(); return {}; /**< Hanja conversion */
+   case SDL_SCANCODE_LANG3:         TODO(); return {}; /**< Katakana */
+   case SDL_SCANCODE_LANG4:         TODO(); return {}; /**< Hiragana */
+   case SDL_SCANCODE_LANG5:         TODO(); return {}; /**< Zenkaku/Hankaku */
+   case SDL_SCANCODE_LANG6:         TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG7:         TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG8:         TODO(); return {}; /**< reserved */
+   case SDL_SCANCODE_LANG9:         TODO(); return {}; /**< reserved */
 
-   case SDL_SCANCODE_ALTERASE:            TODO(); return {}; /**< Erase-Eaze */
-   case SDL_SCANCODE_SYSREQ:              TODO(); return {}; 
-   case SDL_SCANCODE_CANCEL:              TODO(); return {}; /**< AC Cancel */
-   case SDL_SCANCODE_CLEAR:               TODO(); return {}; 
-   case SDL_SCANCODE_PRIOR:               TODO(); return {}; 
-   case SDL_SCANCODE_RETURN2:             TODO(); return {}; 
-   case SDL_SCANCODE_SEPARATOR:           TODO(); return {}; 
-   case SDL_SCANCODE_OUT:                 TODO(); return {}; 
-   case SDL_SCANCODE_OPER:                TODO(); return {}; 
-   case SDL_SCANCODE_CLEARAGAIN:          TODO(); return {}; 
-   case SDL_SCANCODE_CRSEL:               TODO(); return {}; 
-   case SDL_SCANCODE_EXSEL:               TODO(); return {}; 
+   case SDL_SCANCODE_ALTERASE:      TODO(); return {}; /**< Erase-Eaze */
+   case SDL_SCANCODE_SYSREQ:        TODO(); return {}; 
+   case SDL_SCANCODE_CANCEL:        TODO(); return {}; /**< AC Cancel */
+   case SDL_SCANCODE_CLEAR:         TODO(); return {}; 
+   case SDL_SCANCODE_PRIOR:         TODO(); return {}; 
+   case SDL_SCANCODE_RETURN2:       TODO(); return {}; 
+   case SDL_SCANCODE_SEPARATOR:     TODO(); return {}; 
+   case SDL_SCANCODE_OUT:           TODO(); return {}; 
+   case SDL_SCANCODE_OPER:          TODO(); return {}; 
+   case SDL_SCANCODE_CLEARAGAIN:    TODO(); return {}; 
+   case SDL_SCANCODE_CRSEL:         TODO(); return {}; 
+   case SDL_SCANCODE_EXSEL:         TODO(); return {}; 
 
    case SDL_SCANCODE_KP_00:               TODO(); return {}; 
    case SDL_SCANCODE_KP_000:              TODO(); return {}; 

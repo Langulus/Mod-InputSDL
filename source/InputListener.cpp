@@ -45,6 +45,8 @@ void InputListener::AddAnticipator(const Anticipator& ant) {
       auto& newGroup = mAnticipators[ant.mEvent.mType];
       newGroup.Insert(ant.mEvent.mState, ant);
    }
+
+   VERBOSE_INPUT("Anticipator added: ", ant);
 }
 
 /// Create/remove anticipators to the listener                                
@@ -66,7 +68,8 @@ void InputListener::Update(const Time& deltaTime, const EventList& events) {
       for (auto ant_state : ant.mValue) {
          if (ant_state.mValue.Interact(events)) {
             // The anticipator is active and needs to be updated each   
-            // tick                                                     
+            // tick. This is essentially a 'hold' event                 
+            VERBOSE_INPUT("Hold event triggered: ", ant_state.mValue.mEvent);
             ant_state.mValue.mFlow.Update(deltaTime);
          }
       }
@@ -99,8 +102,9 @@ Anticipator::Anticipator(Describe&& desc) {
 }
 
 /// Interact with the anticipator                                             
-///   @param dt - delta time between frames                                   
 ///   @param events - the events                                              
+///   @return true if the anticipator is a 'hold' event and needs to be       
+///      handled in the Update() routine instead                              
 bool Anticipator::Interact(const EventList& events) {
    auto foundEvent = events.FindIt(mEvent.mType);
    if (not foundEvent)
@@ -117,6 +121,7 @@ bool Anticipator::Interact(const EventList& events) {
          if (foundState2 and mEvent.mTimestamp < foundState2.mValue->mTimestamp)
             mEvent = *foundState2.mValue;
 
+         VERBOSE_INPUT("Point event triggered: ", mEvent);
          mFlow.Reset();
          mFlow.Update();
       }
@@ -127,6 +132,8 @@ bool Anticipator::Interact(const EventList& events) {
       const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
       if (foundState) {
          mEvent = *foundState.mValue;
+
+         VERBOSE_INPUT("Begin event triggered: ", mEvent);
          mFlow.Reset();
          mFlow.Update();
       }
@@ -137,6 +144,8 @@ bool Anticipator::Interact(const EventList& events) {
       const auto foundState = foundEvent.mValue->FindIt(EventState::End);
       if (foundState) {
          mEvent = *foundState.mValue;
+
+         VERBOSE_INPUT("End event triggered: ", mEvent);
          mFlow.Reset();
          mFlow.Update();
       }
@@ -144,6 +153,7 @@ bool Anticipator::Interact(const EventList& events) {
    else {
       // Anticipator activates on Begin event, deactivates on an End    
       // event, and shall execute its script on each tick inbetween     
+      // This is a 'hold' event and is handled from the Update routine  
       if (not mActive) {
          const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
          if (foundState) {
