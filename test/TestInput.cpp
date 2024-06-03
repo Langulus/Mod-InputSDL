@@ -22,10 +22,7 @@ SCENARIO("Input handler creation", "[input]") {
    for (int repeat = 0; repeat != 10; ++repeat) {
       GIVEN(std::string("Init and shutdown cycle #") + std::to_string(repeat)) {
          // Create root entity                                          
-         Thing root;
-         root.SetName("ROOT");
-         root.CreateRuntime();
-         root.LoadMod("InputSDL");
+         auto root = Thing::Root<false>("InputSDL");
 
          WHEN("The input gatherer is created via abstractions") {
             auto gatherer = root.CreateUnit<A::InputGatherer>();
