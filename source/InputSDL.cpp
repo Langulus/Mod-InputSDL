@@ -141,40 +141,12 @@ bool InputSDL::Update(Time deltaTime) {
    }
 
    // Dispatch gathered mouse movement events                           
-   if (mouseMovement.x) {
-      VERBOSE_INPUT("Mouse moved horizontally: ", *mouseMovement.x);
-      PushEvent(Events::MouseMoveHorizontal {
-         EventState::Point, *mouseScroll.x});
-   }
-
-   if (mouseMovement.y) {
-      VERBOSE_INPUT("Mouse moved vertically: ", *mouseMovement.y);
-      PushEvent(Events::MouseMoveVertical {
-         EventState::Point, *mouseScroll.y});
-   }
-
-   if (mouseMovement.x or mouseMovement.y) {
-      PushEvent(Events::MouseMove {
-         EventState::Point, mouseScroll});
-   }
+   if (mouseMovement)
+      PushEvent(Events::MouseMove   {EventState::Point, mouseMovement});
    
    // Dispatch gathered mouse scroll events                             
-   if (mouseScroll.x) {
-      VERBOSE_INPUT("Mouse scrolled horizontally: ", *mouseScroll.x);
-      PushEvent(Events::MouseScrollHorizontal {
-         EventState::Point, *mouseScroll.x});
-   }
-
-   if (mouseScroll.y) {
-      VERBOSE_INPUT("Mouse scrolled vertically: ", *mouseScroll.y);
-      PushEvent(Events::MouseScrollVertical {
-         EventState::Point, *mouseScroll.y});
-   }
-
-   if (mouseScroll.x or mouseScroll.y) {
-      PushEvent(Events::MouseScroll {
-         EventState::Point, mouseScroll});
-   }
+   if (mouseScroll)
+      PushEvent(Events::MouseScroll {EventState::Point, mouseScroll});
 
    // Update all gatherers                                              
    for (auto& gatherer : mGatherers)

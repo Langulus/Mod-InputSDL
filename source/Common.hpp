@@ -17,9 +17,11 @@ struct InputGatherer;
 struct InputListener;
 
 #if 1
+   #define VERBOSE_INPUT_ENABLED() 1
    #define VERBOSE_INPUT(...)      Logger::Input(Self(), __VA_ARGS__)
    #define VERBOSE_INPUT_TAB(...)  const auto tab = Logger::Input(Self(), __VA_ARGS__, Logger::Tabs {})
 #else
+   #define VERBOSE_INPUT_ENABLED() 0
    #define VERBOSE_INPUT(...)      LANGULUS(NOOP)
    #define VERBOSE_INPUT_TAB(...)  LANGULUS(NOOP)
 #endif

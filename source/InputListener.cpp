@@ -27,34 +27,36 @@ void InputListener::Refresh() {
 
 /// Check if controller already has an anticipator of some kind               
 /// If anticipator doesn't exist - create a new one                           
-///   @param event - the event that triggers the anticipator                  
-///   @return the anticipator corresponding to the event                      
-void InputListener::AddAnticipator(const Anticipator& ant) {
+///   @param ant - the anticipator                                            
+///   @return the new anticipator                                             
+Anticipator& InputListener::AddAnticipator(const Anticipator& ant) {
    const auto foundEvent = mAnticipators.FindIt(ant.mEvent.mType);
    if (foundEvent) {
       const auto foundState = foundEvent.mValue->FindIt(ant.mEvent.mState);
       if (foundState) {
          // Anticipator already exists, merge scripts                   
-         foundState.mValue->mFlow.Merge(ant.mFlow);
-         return;
+         TODO();// foundState.mValue->mFlow.Merge(ant.mFlow);
+         return *foundState.mValue;
       }
       foundEvent.mValue->Insert(ant.mEvent.mState, ant);
+      return (*foundEvent.mValue)[ant.mEvent.mState];
    }
    else {
       mAnticipators.Insert(ant.mEvent.mType);
       auto& newGroup = mAnticipators[ant.mEvent.mType];
       newGroup.Insert(ant.mEvent.mState, ant);
+      return newGroup[ant.mEvent.mState];
    }
-
-   VERBOSE_INPUT("Anticipator added: ", ant);
 }
 
 /// Create/remove anticipators to the listener                                
 ///   @param verb - the creation verb                                         
 void InputListener::Create(Verb& verb) {
-   // Add anticipators                                                  
    verb.ForEachDeep([&](const Anticipator& e) {
-      AddAnticipator(e);
+      // Add anticipators                                               
+      auto& ant = AddAnticipator(e);
+      ant.Compile(GetOwners());
+      VERBOSE_INPUT("Anticipator added: ", ant);
       verb.Done();
    });
 }
@@ -70,6 +72,10 @@ void InputListener::Update(const Time& deltaTime, const EventList& events) {
             // The anticipator is active and needs to be updated each   
             // tick. This is essentially a 'hold' event                 
             VERBOSE_INPUT("Hold event triggered: ", ant_state.mValue.mEvent);
+            #if VERBOSE_INPUT_ENABLED()
+               ant_state.mValue.mFlow.Dump();
+            #endif
+
             ant_state.mValue.mFlow.Update(deltaTime);
          }
       }
@@ -85,6 +91,20 @@ void InputListener::AutoBind() {
 
 /// Descriptor constructor                                                    
 ///   @param desc - descriptor                                                
+Anticipator::Anticipator(const Anticipator& moved)
+   : mEvent  {moved.mEvent}
+   , mActive {moved.mActive}
+   , mScript {moved.mScript} {}
+
+/// Descriptor constructor                                                    
+///   @param desc - descriptor                                                
+Anticipator::Anticipator(Anticipator&& moved)
+   : mEvent  {Move(moved.mEvent)}
+   , mActive {Move(moved.mActive)}
+   , mScript {Move(moved.mScript)} {}
+
+/// Descriptor constructor                                                    
+///   @param desc - descriptor                                                
 Anticipator::Anticipator(Describe&& desc) {
    // What event are we anticipating?                                   
    LANGULUS_ASSERT(
@@ -96,9 +116,15 @@ Anticipator::Anticipator(Describe&& desc) {
    desc->ExtractData(mEvent.mState);
 
    // How do we react on trigger?                                       
-   Code code;
-   LANGULUS_ASSERT(desc->ExtractData(code),
+   LANGULUS_ASSERT(desc->ExtractData(mScript),
       Construct, "Missing script for anticipator from: ", *desc);
+}
+
+/// Precompile the script                                                     
+void Anticipator::Compile(const Entity::Hierarchy& owners) {
+   // Add hierarchy and event payload as a contexts, they will get      
+   // updated on each interaction/listener environment refresh          
+   mFlow.Push(&owners, &mEvent.mPayload, mScript.Parse());
 }
 
 /// Interact with the anticipator                                             
@@ -122,6 +148,10 @@ bool Anticipator::Interact(const EventList& events) {
             mEvent = *foundState2.mValue;
 
          VERBOSE_INPUT("Point event triggered: ", mEvent);
+         #if VERBOSE_INPUT_ENABLED()
+            mFlow.Dump();
+         #endif
+
          mFlow.Reset();
          mFlow.Update();
       }
@@ -134,6 +164,10 @@ bool Anticipator::Interact(const EventList& events) {
          mEvent = *foundState.mValue;
 
          VERBOSE_INPUT("Begin event triggered: ", mEvent);
+         #if VERBOSE_INPUT_ENABLED()
+            mFlow.Dump();
+         #endif
+
          mFlow.Reset();
          mFlow.Update();
       }
@@ -146,6 +180,10 @@ bool Anticipator::Interact(const EventList& events) {
          mEvent = *foundState.mValue;
 
          VERBOSE_INPUT("End event triggered: ", mEvent);
+         #if VERBOSE_INPUT_ENABLED()
+            mFlow.Dump();
+         #endif
+
          mFlow.Reset();
          mFlow.Update();
       }

@@ -32,7 +32,7 @@ private:
    // Anticipators that react on events                                 
    TUnorderedMap<DMeta, TUnorderedMap<EventState, Anticipator>> mAnticipators;
 
-   void AddAnticipator(const Anticipator&);
+   Anticipator& AddAnticipator(const Anticipator&);
    void AutoBind();
 
 public:
@@ -47,25 +47,30 @@ public:
 ///                                                                           
 ///   Anticipator                                                             
 ///                                                                           
-/// An input pair used to map an event to a script, track time since last     
-/// interaction, count interactions, track state, etc. This anticipator       
+/// An input pair used to map an event pattern to a script, track time since  
+/// last interaction, count interactions, track state, etc. This anticipator  
 /// should anticipate more complex patterns in the future, like gestures.     
 ///                                                                           
 struct Anticipator {
    LANGULUS_CONVERTS_TO(Text);
 
    // Event and state on which anticipator reacts                       
+   // Contained payload acts as a context for the precompiled flow      
    Event mEvent;
-   // Marks the anticipator as active for some moments                  
+   // Marks the anticipator as active in case of Begin/End events       
    bool mActive = false;
-   // Script to execute as event reaction                               
+   // Script                                                            
+   Code mScript;
+   // Precompiled mScript to execute as event reaction                  
    Temporal mFlow;
 
 public:
-   Anticipator(const Anticipator&) = default;
+   Anticipator(const Anticipator&);
+   Anticipator(Anticipator&&);
    Anticipator(Describe&&);
 
    bool Interact(const EventList&);
+   void Compile(const Entity::Hierarchy&);
 
    explicit operator Text() const;
 
