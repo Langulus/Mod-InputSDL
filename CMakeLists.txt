@@ -21,7 +21,7 @@ set(SDL_WASAPI OFF CACHE BOOL "" FORCE)
 fetch_external_module(
     SDL
     GIT_REPOSITORY  https://github.com/libsdl-org/SDL.git
-    GIT_TAG         main
+    GIT_TAG         ba188e7555b873cbb57c9c5ee7ae6dc5a7bd872e #main
 )
 
 file(GLOB_RECURSE

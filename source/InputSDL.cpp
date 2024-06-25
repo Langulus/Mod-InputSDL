@@ -123,7 +123,7 @@ bool InputSDL::Update(Time deltaTime) {
       case SDL_EVENT_KEY_DOWN: {
          // Keyboard key was pressed down                               
          Event newEvent;
-         newEvent.mType = TranslateKey(e.key.keysym.scancode);
+         newEvent.mType = TranslateKey(e.key.scancode);
          newEvent.mState = EventState::Begin;
          VERBOSE_INPUT("Keyboard button pressed: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
@@ -132,7 +132,7 @@ bool InputSDL::Update(Time deltaTime) {
       case SDL_EVENT_KEY_UP: {
          // Keyboard key was released                                   
          Event newEvent;
-         newEvent.mType = TranslateKey(e.key.keysym.scancode);
+         newEvent.mType = TranslateKey(e.key.scancode);
          newEvent.mState = EventState::End;
          VERBOSE_INPUT("Keyboard button released: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
@@ -415,41 +415,29 @@ DMeta TranslateKey(SDL_Scancode i) {
 
    case SDL_SCANCODE_MODE:             TODO(); return {}; //missing
 
-   case SDL_SCANCODE_AUDIONEXT:        TODO(); return {}; //missing
-   case SDL_SCANCODE_AUDIOPREV:        TODO(); return {}; //missing
-   case SDL_SCANCODE_AUDIOSTOP:        TODO(); return {}; //missing
-   case SDL_SCANCODE_AUDIOPLAY:        TODO(); return {}; //missing
-   case SDL_SCANCODE_AUDIOMUTE:        TODO(); return {}; //missing
-   case SDL_SCANCODE_MEDIASELECT:      TODO(); return {}; //missing
-   case SDL_SCANCODE_WWW:              TODO(); return {}; //missing
-   case SDL_SCANCODE_MAIL:             TODO(); return {}; //missing
-   case SDL_SCANCODE_CALCULATOR:       TODO(); return {}; //missing
-   case SDL_SCANCODE_COMPUTER:         TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_SEARCH:        TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_HOME:          TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_BACK:          TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_FORWARD:       TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_STOP:          TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_REFRESH:       TODO(); return {}; //missing
-   case SDL_SCANCODE_AC_BOOKMARKS:     TODO(); return {}; //missing
+   case SDL_SCANCODE_MEDIA_NEXT_TRACK:       TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_PREVIOUS_TRACK:   TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_STOP:             TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_PLAY:             TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_SELECT:           TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_REWIND:           TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_FAST_FORWARD:     TODO(); return {}; // missing
 
-   case SDL_SCANCODE_BRIGHTNESSDOWN:   TODO(); return {}; // missing
-   case SDL_SCANCODE_BRIGHTNESSUP:     TODO(); return {}; // missing
-   case SDL_SCANCODE_DISPLAYSWITCH:    TODO(); return {}; // missing
-   case SDL_SCANCODE_KBDILLUMTOGGLE:   TODO(); return {}; // missing
-   case SDL_SCANCODE_KBDILLUMDOWN:     TODO(); return {}; // missing
-   case SDL_SCANCODE_KBDILLUMUP:       TODO(); return {}; // missing
-   case SDL_SCANCODE_EJECT:            TODO(); return {}; // missing
-   case SDL_SCANCODE_SLEEP:            TODO(); return {}; // missing
-   case SDL_SCANCODE_APP1:             TODO(); return {}; // missing
-   case SDL_SCANCODE_APP2:             TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_SEARCH:              TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_HOME:                TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_BACK:                TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_FORWARD:             TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_STOP:                TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_REFRESH:             TODO(); return {}; // missing
+   case SDL_SCANCODE_AC_BOOKMARKS:           TODO(); return {}; // missing
 
-   case SDL_SCANCODE_AUDIOREWIND:      TODO(); return {}; // missing
-   case SDL_SCANCODE_AUDIOFASTFORWARD: TODO(); return {}; // missing
-   case SDL_SCANCODE_SOFTLEFT:         TODO(); return {}; // missing
-   case SDL_SCANCODE_SOFTRIGHT:        TODO(); return {}; // missing
-   case SDL_SCANCODE_CALL:             TODO(); return {}; // missing
-   case SDL_SCANCODE_ENDCALL:          TODO(); return {}; // missing
+   case SDL_SCANCODE_MEDIA_EJECT:            TODO(); return {}; // missing
+   case SDL_SCANCODE_SLEEP:                  TODO(); return {}; // missing
+
+   case SDL_SCANCODE_SOFTLEFT:               TODO(); return {}; // missing
+   case SDL_SCANCODE_SOFTRIGHT:              TODO(); return {}; // missing
+   case SDL_SCANCODE_CALL:                   TODO(); return {}; // missing
+   case SDL_SCANCODE_ENDCALL:                TODO(); return {}; // missing
    default:
       LANGULUS_OOPS(Meta, "Missing keyboard event");
       return {};
