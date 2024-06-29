@@ -49,13 +49,38 @@ Anticipator& InputListener::AddAnticipator(const Anticipator& ant) {
    }
 }
 
+/// Remove an anticipator                                                     
+///   @param ant - the anticipator to remove                                  
+void InputListener::RemoveAnticipator(const Anticipator& ant) {
+   const auto foundEvent = mAnticipators.FindIt(ant.mEvent.mType);
+   if (foundEvent) {
+      const auto foundState = foundEvent.mValue->FindIt(ant.mEvent.mState);
+      if (foundState) {
+         foundEvent.mValue->RemoveIt(foundState);
+         if (foundEvent.mValue->IsEmpty())
+            mAnticipators.RemoveIt(foundEvent);
+      }
+   }
+}
+
 /// Create/remove anticipators to the listener                                
 ///   @param verb - the creation verb                                         
 void InputListener::Create(Verb& verb) {
    verb.ForEachDeep([&](const Anticipator& e) {
       // Add anticipators                                               
       auto& ant = AddAnticipator(e);
-      ant.Compile(GetOwners());
+
+      // We have to compile separately after anticipator has been       
+      // emplaced, because its flow reuses local addresses              
+      //TODO just recompile on move? but that would mean double compilation time... then just compile on demand?
+      try { ant.Compile(GetOwners()); }
+      catch (...) {
+         // Make sure anticipator is removed on compilation failure     
+         RemoveAnticipator(ant);
+         throw;
+      }
+
+      // Success, if reached                                            
       VERBOSE_INPUT("Anticipator added: ", ant);
       verb.Done();
    });

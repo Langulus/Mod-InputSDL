@@ -33,6 +33,7 @@ private:
    TUnorderedMap<DMeta, TUnorderedMap<EventState, Anticipator>> mAnticipators;
 
    Anticipator& AddAnticipator(const Anticipator&);
+   void RemoveAnticipator(const Anticipator&);
    void AutoBind();
 
 public:
