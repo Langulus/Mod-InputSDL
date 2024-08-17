@@ -29,7 +29,7 @@ SCENARIO("Input handler creation", "[input]") {
             auto listener = root.CreateUnit<A::InputListener>();
 
             // Update once                                              
-            root.Update(Time::zero());
+            root.Update({});
             root.DumpHierarchy();
 
             REQUIRE(gatherer.GetCount() == 1);
@@ -49,7 +49,7 @@ SCENARIO("Input handler creation", "[input]") {
             auto listener = root.CreateUnitToken("InputListener");
 
             // Update once                                              
-            root.Update(Time::zero());
+            root.Update({});
             root.DumpHierarchy();
 
             REQUIRE(gatherer.GetCount() == 1);

@@ -101,7 +101,8 @@ void InputListener::Update(const Time& deltaTime, const EventList& events) {
                ant_state.mValue.mFlow.Dump();
             #endif
 
-            ant_state.mValue.mFlow.Update(deltaTime);
+            Many unusedSideEffects;
+            ant_state.mValue.mFlow.Update(deltaTime, unusedSideEffects);
          }
       }
    }
@@ -157,6 +158,7 @@ void Anticipator::Compile(const Entity::Hierarchy& owners) {
 ///   @return true if the anticipator is a 'hold' event and needs to be       
 ///      handled in the Update() routine instead                              
 bool Anticipator::Interact(const EventList& events) {
+   Many unusedSideEffects;
    auto foundEvent = events.FindIt(mEvent.mType);
    if (not foundEvent)
       return false;
@@ -178,7 +180,7 @@ bool Anticipator::Interact(const EventList& events) {
          #endif
 
          mFlow.Reset();
-         mFlow.Update();
+         mFlow.Update({}, unusedSideEffects);
       }
    }
    else if (mEvent.mState == EventState::Begin) {
@@ -194,7 +196,7 @@ bool Anticipator::Interact(const EventList& events) {
          #endif
 
          mFlow.Reset();
-         mFlow.Update();
+         mFlow.Update({}, unusedSideEffects);
       }
    }
    else if (mEvent.mState == EventState::End) {
@@ -210,7 +212,7 @@ bool Anticipator::Interact(const EventList& events) {
          #endif
 
          mFlow.Reset();
-         mFlow.Update();
+         mFlow.Update({}, unusedSideEffects);
       }
    }
    else {
