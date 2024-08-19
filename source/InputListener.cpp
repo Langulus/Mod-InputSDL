@@ -13,8 +13,9 @@
 ///   @param producer - the producer                                          
 ///   @param descriptor - instructions for configuring the listener           
 InputListener::InputListener(InputGatherer* producer, const Neat& descriptor)
-   : Resolvable   {this}
-   , ProducedFrom {producer, descriptor} {
+   : Resolvable    {this}
+   , ProducedFrom  {producer, descriptor}
+   /*, mAnticipators {this}*/ {
    VERBOSE_INPUT("Initializing...");
    Couple(descriptor);
    VERBOSE_INPUT("Initialized");
@@ -25,65 +26,10 @@ void InputListener::Refresh() {
 
 }
 
-/// Check if controller already has an anticipator of some kind               
-/// If anticipator doesn't exist - create a new one                           
-///   @param ant - the anticipator                                            
-///   @return the new anticipator                                             
-Anticipator& InputListener::AddAnticipator(const Anticipator& ant) {
-   const auto foundEvent = mAnticipators.FindIt(ant.mEvent.mType);
-   if (foundEvent) {
-      const auto foundState = foundEvent.mValue->FindIt(ant.mEvent.mState);
-      if (foundState) {
-         // Anticipator already exists, merge scripts                   
-         TODO();// foundState.mValue->mFlow.Merge(ant.mFlow);
-         return *foundState.mValue;
-      }
-      foundEvent.mValue->Insert(ant.mEvent.mState, ant);
-      return (*foundEvent.mValue)[ant.mEvent.mState];
-   }
-   else {
-      mAnticipators.Insert(ant.mEvent.mType);
-      auto& newGroup = mAnticipators[ant.mEvent.mType];
-      newGroup.Insert(ant.mEvent.mState, ant);
-      return newGroup[ant.mEvent.mState];
-   }
-}
-
-/// Remove an anticipator                                                     
-///   @param ant - the anticipator to remove                                  
-void InputListener::RemoveAnticipator(const Anticipator& ant) {
-   const auto foundEvent = mAnticipators.FindIt(ant.mEvent.mType);
-   if (foundEvent) {
-      const auto foundState = foundEvent.mValue->FindIt(ant.mEvent.mState);
-      if (foundState) {
-         foundEvent.mValue->RemoveIt(foundState);
-         if (foundEvent.mValue->IsEmpty())
-            mAnticipators.RemoveIt(foundEvent);
-      }
-   }
-}
-
-/// Create/remove anticipators to the listener                                
+/// Create/remove anticipators to/from the listener                           
 ///   @param verb - the creation verb                                         
 void InputListener::Create(Verb& verb) {
-   verb.ForEachDeep([&](const Anticipator& e) {
-      // Add anticipators                                               
-      auto& ant = AddAnticipator(e);
-
-      // We have to compile separately after anticipator has been       
-      // emplaced, because its flow reuses local addresses              
-      //TODO just recompile on move? but that would mean double compilation time... then just compile on demand?
-      try { ant.Compile(GetOwners()); }
-      catch (...) {
-         // Make sure anticipator is removed on compilation failure     
-         RemoveAnticipator(ant);
-         throw;
-      }
-
-      // Success, if reached                                            
-      VERBOSE_INPUT("Anticipator added: ", ant);
-      verb.Done();
-   });
+   mAnticipators.Create(this, verb);
 }
 
 /// React on events                                                           
@@ -91,20 +37,15 @@ void InputListener::Create(Verb& verb) {
 ///   @param events - events to react to                                      
 void InputListener::Update(const Time& deltaTime, const EventList& events) {
    // Execute all active anticipators' scripts                          
-   for (auto ant : mAnticipators) {
-      for (auto ant_state : ant.mValue) {
-         if (ant_state.mValue.Interact(events)) {
-            // The anticipator is active and needs to be updated each   
-            // tick. This is essentially a 'hold' event                 
-            VERBOSE_INPUT("Hold event triggered: ", ant_state.mValue.mEvent);
-            #if VERBOSE_INPUT_ENABLED()
-               ant_state.mValue.mFlow.Dump();
-            #endif
-
-            Many unusedSideEffects;
-            ant_state.mValue.mFlow.Update(deltaTime, unusedSideEffects);
-         }
-      }
+   for (auto& ant : mAnticipators) {
+      if (not ant.Interact(events))
+         continue;
+      
+      // The anticipator is active and needs to be updated each         
+      // tick. This is essentially a 'hold' event                       
+      VERBOSE_INPUT("Hold event triggered: ", ant.mEvent);
+      Many unusedSideEffects;
+      ant.mFlow.Update(deltaTime, unusedSideEffects);
    }
 }
 
@@ -115,43 +56,41 @@ void InputListener::AutoBind() {
    TODO();
 }
 
-/// Descriptor constructor                                                    
+/// Anticipator constructor                                                   
+///   @param producer - the producer of the anticipator                       
 ///   @param desc - descriptor                                                
-Anticipator::Anticipator(const Anticipator& moved)
-   : mEvent  {moved.mEvent}
-   , mActive {moved.mActive}
-   , mScript {moved.mScript} {}
-
-/// Descriptor constructor                                                    
-///   @param desc - descriptor                                                
-Anticipator::Anticipator(Anticipator&& moved)
-   : mEvent  {Move(moved.mEvent)}
-   , mActive {Move(moved.mActive)}
-   , mScript {Move(moved.mScript)} {}
-
-/// Descriptor constructor                                                    
-///   @param desc - descriptor                                                
-Anticipator::Anticipator(Describe&& desc) {
+Anticipator::Anticipator(InputListener* producer, const Neat& desc)
+   : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
    LANGULUS_ASSERT(
-         desc->ExtractData(mEvent)
-      or desc->ExtractData(mEvent.mType),
-      Construct, "Invalid event for anticipator from: ", *desc);
+         desc.ExtractData(mEvent)
+      or desc.ExtractData(mEvent.mType),
+      Construct, "Invalid event for anticipator from: ", desc);
 
    // Optional state override                                           
-   desc->ExtractData(mEvent.mState);
+   desc.ExtractData(mEvent.mState);
 
    // How do we react on trigger?                                       
-   LANGULUS_ASSERT(desc->ExtractData(mScript),
-      Construct, "Missing script for anticipator from: ", *desc);
+   LANGULUS_ASSERT(desc.ExtractData(mScript),
+      Construct, "Missing script for anticipator from: ", desc);
+
+   // Add hierarchy and event payload as a contexts, they will get      
+   // updated on each interaction/listener environment refresh          
+   mFlow.Push(&producer->GetOwners(), &mEvent.mPayload, mScript.Parse());
+   VERBOSE_INPUT("Anticipator for ", mEvent.mType, " ", mEvent.mState, " compiled: ");
+   #if VERBOSE_INPUT_ENABLED()
+      mFlow.Dump();
+   #endif
+
+   //mScript.Compile(producer->GetOwners());
 }
 
 /// Precompile the script                                                     
-void Anticipator::Compile(const Entity::Hierarchy& owners) {
+/*void Anticipator::Compile(const Entity::Hierarchy& owners) {
    // Add hierarchy and event payload as a contexts, they will get      
    // updated on each interaction/listener environment refresh          
    mFlow.Push(&owners, &mEvent.mPayload, mScript.Parse());
-}
+}*/
 
 /// Interact with the anticipator                                             
 ///   @param events - the events                                              
@@ -237,6 +176,9 @@ bool Anticipator::Interact(const EventList& events) {
    return mActive;
 }
 
+/// Stringify the anticipator                                                 
 Anticipator::operator Text() const {
-   return Text::TemplateRt("{}({}, {})", MetaOf<Anticipator>(), mEvent, mFlow);
+   return Text::TemplateRt(
+      "{}({}, {})", MetaOf<Anticipator>(), mEvent.mType, mScript
+   );
 }

@@ -15,7 +15,7 @@
 InputGatherer::InputGatherer(InputSDL* producer, const Neat& descriptor)
    : Resolvable   {this}
    , ProducedFrom {producer, descriptor}
-   , mListeners   {this} {
+   /*, mListeners   {this}*/ {
    VERBOSE_INPUT("Initializing...");
    // Create an invisible window so that we can capture and track       
    // the global mouse                                                  
@@ -54,7 +54,7 @@ InputGatherer::~InputGatherer() {
 /// Produce GUI elements in the system                                        
 ///   @param verb - creation verb to satisfy                                  
 void InputGatherer::Create(Verb& verb) {
-   mListeners.Create(verb);
+   mListeners.Create(this, verb);
 }
 
 /// Interact with all listeners                                               

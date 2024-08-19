@@ -25,7 +25,7 @@ DMeta TranslateMouse(Uint8);
 InputSDL::InputSDL(Runtime* runtime, const Neat&)
    : Resolvable{this}
    , A::Module {runtime}
-   , mGatherers{this} {
+   /*, mGatherers{this}*/ {
    // Reflect all event tokens                                          
    Langulus::RegisterEvents();
 
@@ -159,7 +159,7 @@ bool InputSDL::Update(Time deltaTime) {
 /// Create/Destroy GUI systems                                                
 ///   @param verb - the creation/destruction verb                             
 void InputSDL::Create(Verb& verb) {
-   mGatherers.Create(verb);
+   mGatherers.Create(this, verb);
 }
 
 /// Push a global event, that will be propagated to all gatherers             

@@ -30,10 +30,8 @@ private:
    // Acts as mass modifier for executed scripts                        
    Real mControlFactor = 1;
    // Anticipators that react on events                                 
-   TUnorderedMap<DMeta, TUnorderedMap<EventState, Anticipator>> mAnticipators;
+   TFactoryUnique<Anticipator> mAnticipators;
 
-   Anticipator& AddAnticipator(const Anticipator&);
-   void RemoveAnticipator(const Anticipator&);
    void AutoBind();
 
 public:
@@ -52,8 +50,9 @@ public:
 /// last interaction, count interactions, track state, etc. This anticipator  
 /// should anticipate more complex patterns in the future, like gestures.     
 ///                                                                           
-struct Anticipator {
+struct Anticipator : Referenced, ProducedFrom<InputListener> {
    LANGULUS_CONVERTS_TO(Text);
+   LANGULUS_PRODUCER() InputListener;
 
    // Event and state on which anticipator reacts                       
    // Contained payload acts as a context for the precompiled flow      
@@ -66,15 +65,14 @@ struct Anticipator {
    Temporal mFlow;
 
 public:
-   Anticipator(const Anticipator&);
-   Anticipator(Anticipator&&);
-   Anticipator(Describe&&);
+   Anticipator(InputListener*, const Neat&);
 
    bool Interact(const EventList&);
-   void Compile(const Entity::Hierarchy&);
+   //void Compile(const Entity::Hierarchy&);
 
    explicit operator Text() const;
 
 protected:
    Text Self() const { return operator Text() + ": "; }
 };
+
