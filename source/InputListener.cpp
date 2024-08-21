@@ -14,8 +14,7 @@
 ///   @param descriptor - instructions for configuring the listener           
 InputListener::InputListener(InputGatherer* producer, const Neat& descriptor)
    : Resolvable    {this}
-   , ProducedFrom  {producer, descriptor}
-   /*, mAnticipators {this}*/ {
+   , ProducedFrom  {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    Couple(descriptor);
    VERBOSE_INPUT("Initialized");
@@ -74,23 +73,15 @@ Anticipator::Anticipator(InputListener* producer, const Neat& desc)
    LANGULUS_ASSERT(desc.ExtractData(mScript),
       Construct, "Missing script for anticipator from: ", desc);
 
-   // Add hierarchy and event payload as a contexts, they will get      
+   // Add hierarchy and event payload as contexts, they will get        
    // updated on each interaction/listener environment refresh          
    mFlow.Push(&producer->GetOwners(), &mEvent.mPayload, mScript.Parse());
+
    VERBOSE_INPUT("Anticipator for ", mEvent.mType, " ", mEvent.mState, " compiled: ");
    #if VERBOSE_INPUT_ENABLED()
       mFlow.Dump();
    #endif
-
-   //mScript.Compile(producer->GetOwners());
 }
-
-/// Precompile the script                                                     
-/*void Anticipator::Compile(const Entity::Hierarchy& owners) {
-   // Add hierarchy and event payload as a contexts, they will get      
-   // updated on each interaction/listener environment refresh          
-   mFlow.Push(&owners, &mEvent.mPayload, mScript.Parse());
-}*/
 
 /// Interact with the anticipator                                             
 ///   @param events - the events                                              

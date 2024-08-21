@@ -68,7 +68,6 @@ public:
    Anticipator(InputListener*, const Neat&);
 
    bool Interact(const EventList&);
-   //void Compile(const Entity::Hierarchy&);
 
    explicit operator Text() const;
 

@@ -24,8 +24,7 @@ DMeta TranslateMouse(Uint8);
 ///   @param descriptor - instructions for configuring the module             
 InputSDL::InputSDL(Runtime* runtime, const Neat&)
    : Resolvable{this}
-   , A::Module {runtime}
-   /*, mGatherers{this}*/ {
+   , A::Module {runtime} {
    // Reflect all event tokens                                          
    Langulus::RegisterEvents();
 

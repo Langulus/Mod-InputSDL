@@ -10,12 +10,11 @@
 
 
 /// Gatherer construction                                                     
-///   @param producer - the system producer                                   
-///   @param descriptor - instructions for configuring the GUI                
+///   @param producer - the input module                                      
+///   @param descriptor - instructions for configuring the gatherer           
 InputGatherer::InputGatherer(InputSDL* producer, const Neat& descriptor)
    : Resolvable   {this}
-   , ProducedFrom {producer, descriptor}
-   /*, mListeners   {this}*/ {
+   , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    // Create an invisible window so that we can capture and track       
    // the global mouse                                                  
