@@ -96,13 +96,13 @@ bool Anticipator::Interact(const EventList& events) {
    if (mEvent.mState == EventState::Point) {
       // Anticipator doesn't activate - its script will just be         
       // executed once and then reset                                   
-      const auto foundState1 = foundEvent.mValue->FindIt(EventState::Point);
-      const auto foundState2 = foundEvent.mValue->FindIt(EventState::Begin);
+      const auto foundState1 = foundEvent.GetValue().FindIt(EventState::Point);
+      const auto foundState2 = foundEvent.GetValue().FindIt(EventState::Begin);
       if (foundState1 or foundState2) {
          if (foundState1)
-            mEvent = *foundState1.mValue;
-         if (foundState2 and mEvent.mTimestamp < foundState2.mValue->mTimestamp)
-            mEvent = *foundState2.mValue;
+            mEvent = foundState1.GetValue();
+         if (foundState2 and mEvent.mTimestamp < foundState2.GetValue().mTimestamp)
+            mEvent = foundState2.GetValue();
 
          VERBOSE_INPUT("Point event triggered: ", mEvent);
          #if VERBOSE_INPUT_ENABLED()
@@ -116,9 +116,9 @@ bool Anticipator::Interact(const EventList& events) {
    else if (mEvent.mState == EventState::Begin) {
       // Anticipator doesn't activate - its script will just be         
       // executed once on a Begin event                                 
-      const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
+      const auto foundState = foundEvent.GetValue().FindIt(EventState::Begin);
       if (foundState) {
-         mEvent = *foundState.mValue;
+         mEvent = foundState.GetValue();
 
          VERBOSE_INPUT("Begin event triggered: ", mEvent);
          #if VERBOSE_INPUT_ENABLED()
@@ -132,9 +132,9 @@ bool Anticipator::Interact(const EventList& events) {
    else if (mEvent.mState == EventState::End) {
       // Anticipator doesn't activate - its script will just be         
       // executed once on an End event                                  
-      const auto foundState = foundEvent.mValue->FindIt(EventState::End);
+      const auto foundState = foundEvent.GetValue().FindIt(EventState::End);
       if (foundState) {
-         mEvent = *foundState.mValue;
+         mEvent = foundState.GetValue();
 
          VERBOSE_INPUT("End event triggered: ", mEvent);
          #if VERBOSE_INPUT_ENABLED()
@@ -150,15 +150,15 @@ bool Anticipator::Interact(const EventList& events) {
       // event, and shall execute its script on each tick inbetween     
       // This is a 'hold' event and is handled from the Update routine  
       if (not mActive) {
-         const auto foundState = foundEvent.mValue->FindIt(EventState::Begin);
+         const auto foundState = foundEvent.GetValue().FindIt(EventState::Begin);
          if (foundState) {
-            mEvent = *foundState.mValue;
+            mEvent = foundState.GetValue();
             mActive = true;
             mFlow.Reset();
          }
       }
       else {
-         const auto foundState = foundEvent.mValue->FindIt(EventState::End);
+         const auto foundState = foundEvent.GetValue().FindIt(EventState::End);
          if (foundState)
             mActive = false;
       }

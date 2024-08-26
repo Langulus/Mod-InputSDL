@@ -166,13 +166,13 @@ void InputSDL::Create(Verb& verb) {
 void InputSDL::PushEvent(const Event& e) {
    const auto foundEvent = mGlobalEvents.FindIt(e.mType);
    if (foundEvent) {
-      const auto foundState = foundEvent.mValue->FindIt(e.mState);
+      const auto foundState = foundEvent.GetValue().FindIt(e.mState);
       if (foundState) {
          // Event already exists, merge payload                         
-         foundState.mValue->mPayload += e.mPayload;
+         foundState.GetValue().mPayload += e.mPayload;
          return;
       }
-      foundEvent.mValue->Insert(e.mState, e);
+      foundEvent.GetValue().Insert(e.mState, e);
    }
    else {
       mGlobalEvents.Insert(e.mType);
