@@ -28,7 +28,7 @@ private:
    EventList mGlobalEvents;
 
 public:
-    InputSDL(Runtime*, const Neat&);
+    InputSDL(Runtime*, Describe);
    ~InputSDL();
 
    bool Update(Time);

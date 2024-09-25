@@ -12,7 +12,7 @@
 /// Listener construction                                                     
 ///   @param producer - the producer                                          
 ///   @param descriptor - instructions for configuring the listener           
-InputListener::InputListener(InputGatherer* producer, const Neat& descriptor)
+InputListener::InputListener(InputGatherer* producer, Describe descriptor)
    : Resolvable    {this}
    , ProducedFrom  {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
@@ -58,7 +58,7 @@ void InputListener::AutoBind() {
 /// Anticipator constructor                                                   
 ///   @param producer - the producer of the anticipator                       
 ///   @param desc - descriptor                                                
-Anticipator::Anticipator(InputListener* producer, const Neat& desc)
+Anticipator::Anticipator(InputListener* producer, Describe desc)
    : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
    LANGULUS_ASSERT(
