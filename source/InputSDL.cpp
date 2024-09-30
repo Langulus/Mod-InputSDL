@@ -22,7 +22,7 @@ DMeta TranslateMouse(Uint8);
 /// Module construction                                                       
 ///   @param runtime - the runtime that owns the module                       
 ///   @param descriptor - instructions for configuring the module             
-InputSDL::InputSDL(Runtime* runtime, Describe)
+InputSDL::InputSDL(Runtime* runtime, const Many&)
    : Resolvable{this}
    , A::Module {runtime} {
    // Reflect all event tokens                                          

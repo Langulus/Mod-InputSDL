@@ -35,7 +35,7 @@ private:
    void AutoBind();
 
 public:
-   InputListener(InputGatherer*, Describe);
+   InputListener(InputGatherer*, const Many&);
 
    void Create(Verb&);
    void Update(const Time&, const EventList&);
@@ -65,7 +65,7 @@ struct Anticipator : Referenced, ProducedFrom<InputListener> {
    Temporal mFlow;
 
 public:
-   Anticipator(InputListener*, Describe);
+   Anticipator(InputListener*, const Many&);
 
    bool Interact(const EventList&);
 

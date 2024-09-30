@@ -33,7 +33,7 @@ private:
    SDL_Window* mInputFocus {};
 
 public:
-    InputGatherer(InputSDL*, Describe);
+    InputGatherer(InputSDL*, const Many&);
    ~InputGatherer();
 
    void Create(Verb&);
