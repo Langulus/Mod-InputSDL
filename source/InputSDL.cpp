@@ -39,6 +39,9 @@ InputSDL::InputSDL(Runtime* runtime, const Many&)
 
 ///                                                                           
 InputSDL::~InputSDL() {
+   mGlobalEvents.Reset();
+   mGatherers.Reset();
+
    SDL_Quit();
 }
 
