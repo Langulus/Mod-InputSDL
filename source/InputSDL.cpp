@@ -45,6 +45,11 @@ InputSDL::~InputSDL() {
    SDL_Quit();
 }
 
+/// First stage destruction                                                   
+void InputSDL::Teardown() {
+   mGatherers.Teardown();
+}
+
 /// Module update routine                                                     
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the UI requested exit                                  

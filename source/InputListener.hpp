@@ -40,6 +40,7 @@ public:
    void Create(Verb&);
    void Update(const Time&, const EventList&);
    void Refresh();
+   void Teardown();
 };
 
 

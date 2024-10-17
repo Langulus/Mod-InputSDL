@@ -41,4 +41,5 @@ public:
 
    bool Update(Time, const EventList&);
    void Refresh();
+   void Teardown();
 };

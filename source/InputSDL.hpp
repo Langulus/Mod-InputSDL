@@ -31,8 +31,9 @@ public:
     InputSDL(Runtime*, const Many&);
    ~InputSDL();
 
-   bool Update(Time);
    void Create(Verb&);
 
+   bool Update(Time);
    void PushEvent(const Event&);
+   void Teardown();
 };

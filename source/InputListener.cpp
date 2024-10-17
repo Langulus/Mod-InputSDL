@@ -20,6 +20,11 @@ InputListener::InputListener(InputGatherer* producer, const Many& descriptor)
    VERBOSE_INPUT("Initialized");
 }
 
+/// First stage destruction                                                   
+void InputListener::Teardown() {
+   mAnticipators.Teardown();
+}
+
 /// React on environmental change                                             
 void InputListener::Refresh() {
 

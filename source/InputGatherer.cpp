@@ -50,6 +50,11 @@ InputGatherer::~InputGatherer() {
       SDL_DestroyWindow(mInputFocus);
 }
 
+/// First stage destruction                                                   
+void InputGatherer::Teardown() {
+   mListeners.Teardown();
+}
+
 /// Produce GUI elements in the system                                        
 ///   @param verb - creation verb to satisfy                                  
 void InputGatherer::Create(Verb& verb) {
