@@ -31,12 +31,9 @@ file(GLOB_RECURSE
 )
 
 # Build the module                                                              
-add_library(LangulusModInputSDL SHARED ${LANGULUS_MOD_INPUTSDL_SOURCES})
+add_langulus_mod(LangulusModInputSDL ${LANGULUS_MOD_INPUTSDL_SOURCES})
 
-target_link_libraries(LangulusModInputSDL 
-    PRIVATE     Langulus
-				SDL3-static
-)
+target_link_libraries(LangulusModInputSDL PRIVATE SDL3-static)
 
 if(LANGULUS_TESTING)
     enable_testing()
