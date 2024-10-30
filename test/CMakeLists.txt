@@ -4,19 +4,8 @@ file(GLOB_RECURSE
 	*.cpp
 )
 
-add_executable(LangulusModInputSDLTest ${LANGULUS_MOD_INPUTSDL_TEST_SOURCES})
-
-target_link_libraries(LangulusModInputSDLTest
-	PRIVATE		Langulus
-				Catch2
-)
-
-add_dependencies(LangulusModInputSDLTest
-	LangulusModInputSDL
-)
-
-add_test(
-	NAME		LangulusModInputSDLTest
-	COMMAND		LangulusModInputSDLTest
-	WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+add_langulus_test(LangulusModInputSDLTest
+	SOURCES			${LANGULUS_MOD_INPUTSDL_TEST_SOURCES}
+	LIBRARIES		Langulus
+	DEPENDENCIES    LangulusModInputSDL
 )

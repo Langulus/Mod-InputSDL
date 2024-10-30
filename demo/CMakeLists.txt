@@ -4,12 +4,8 @@ file(GLOB_RECURSE
 	*.cpp
 )
 
-add_executable(LangulusModInputSDLDemo ${LANGULUS_MOD_INPUTSDL_DEMO_SOURCES})
-
-target_link_libraries(LangulusModInputSDLDemo
-	PRIVATE		Langulus
-)
-
-add_dependencies(LangulusModInputSDLDemo
-	LangulusModInputSDL
+add_langulus_app(LangulusModInputSDLDemo
+	SOURCES			${LANGULUS_MOD_INPUTSDL_DEMO_SOURCES}
+	LIBRARIES		Langulus
+	DEPENDENCIES    LangulusModInputSDL
 )
