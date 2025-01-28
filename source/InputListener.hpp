@@ -7,9 +7,9 @@
 ///                                                                           
 #pragma once
 #include "Common.hpp"
-#include <Flow/Factory.hpp>
-#include <Flow/Time.hpp>
-#include <Flow/Verbs/Create.hpp>
+#include <Langulus/Flow/Factory.hpp>
+#include <Langulus/Flow/Time.hpp>
+#include <Langulus/Verbs/Create.hpp>
 
 struct Anticipator;
 
