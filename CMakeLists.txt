@@ -18,6 +18,7 @@ set(SDL_RENDER_D3D OFF CACHE BOOL "" FORCE)
 set(SDL_RENDER_VULKAN OFF CACHE BOOL "" FORCE)
 set(SDL_VULKAN OFF CACHE BOOL "" FORCE)
 set(SDL_WASAPI OFF CACHE BOOL "" FORCE)
+
 fetch_external_module(
     SDL
     GIT_REPOSITORY  https://github.com/libsdl-org/SDL.git
@@ -36,7 +37,7 @@ add_langulus_mod(LangulusModInputSDL ${LANGULUS_MOD_INPUTSDL_SOURCES})
 target_link_libraries(LangulusModInputSDL PRIVATE SDL3-static)
 
 if(LANGULUS_TESTING)
-    enable_testing()
+	enable_testing()
     add_subdirectory(test)
 endif()
 
