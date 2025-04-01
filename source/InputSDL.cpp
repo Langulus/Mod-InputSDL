@@ -6,6 +6,7 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include "InputSDL.hpp"
+#include <Langulus/Profiler.hpp>
 
 LANGULUS_DEFINE_MODULE(
    InputSDL, 0, "InputSDL",
@@ -54,6 +55,7 @@ void InputSDL::Teardown() {
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the UI requested exit                                  
 bool InputSDL::Update(Time deltaTime) {
+   LANGULUS(PROFILE);
    Math::Vec2f mouseMovement;
    Math::Vec2f mouseScroll;
    SDL_Event e;
