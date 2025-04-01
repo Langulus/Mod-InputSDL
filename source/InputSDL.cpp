@@ -6,7 +6,6 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include "InputSDL.hpp"
-#include <Langulus/Profiler.hpp>
 
 LANGULUS_DEFINE_MODULE(
    InputSDL, 0, "InputSDL",
