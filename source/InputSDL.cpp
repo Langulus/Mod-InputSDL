@@ -415,11 +415,11 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_LCTRL:            return MetaOf<Keys::LeftControl>(); 
    case SDL_SCANCODE_LSHIFT:           return MetaOf<Keys::LeftShift>();   
    case SDL_SCANCODE_LALT:             return MetaOf<Keys::LeftAlt>();     
-   case SDL_SCANCODE_LGUI:             TODO(); return {}; //missing
+   case SDL_SCANCODE_LGUI:             return MetaOf<Keys::LeftGUI>();
    case SDL_SCANCODE_RCTRL:            return MetaOf<Keys::RightControl>();
    case SDL_SCANCODE_RSHIFT:           return MetaOf<Keys::RightShift>();  
    case SDL_SCANCODE_RALT:             return MetaOf<Keys::RightAlt>();    
-   case SDL_SCANCODE_RGUI:             TODO(); return {}; //missing
+   case SDL_SCANCODE_RGUI:             return MetaOf<Keys::RightGUI>();
 
    case SDL_SCANCODE_MODE:             TODO(); return {}; //missing
 
