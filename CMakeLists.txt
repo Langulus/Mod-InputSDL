@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.30)
 project(LangulusModInputSDL
     VERSION         1.0.0
     DESCRIPTION     "Langulus plug-in module for handling raw input using the SDL library"
@@ -6,6 +6,7 @@ project(LangulusModInputSDL
 )
 
 # Configure SDL library, it will be statically built inside this module			
+# All we need is the input part! Chop chop chop.
 set(SDL_DIRECTX OFF CACHE BOOL "" FORCE)
 set(SDL_DISKAUDIO OFF CACHE BOOL "" FORCE)
 set(SDL_DUMMYAUDIO OFF CACHE BOOL "" FORCE)
@@ -18,11 +19,16 @@ set(SDL_RENDER_D3D OFF CACHE BOOL "" FORCE)
 set(SDL_RENDER_VULKAN OFF CACHE BOOL "" FORCE)
 set(SDL_VULKAN OFF CACHE BOOL "" FORCE)
 set(SDL_WASAPI OFF CACHE BOOL "" FORCE)
+set(SDL_TESTS OFF CACHE BOOL "" FORCE)
+set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(SDL_SHARED OFF CACHE BOOL "" FORCE)
+set(SDL_STATIC ON CACHE BOOL "" FORCE)
+set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
 
 fetch_external_module(
     SDL
     GIT_REPOSITORY  https://github.com/libsdl-org/SDL.git
-    GIT_TAG         ba188e7555b873cbb57c9c5ee7ae6dc5a7bd872e #main
+    GIT_TAG         release-3.4.16
 )
 
 file(GLOB_RECURSE
