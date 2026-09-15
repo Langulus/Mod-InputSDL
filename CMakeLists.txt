@@ -42,7 +42,7 @@ add_langulus_mod(LangulusModInputSDL ${LANGULUS_MOD_INPUTSDL_SOURCES})
 
 target_link_libraries(LangulusModInputSDL PRIVATE SDL3-static)
 
-if(LANGULUS_TESTING)
+if(LANGULUS_OPTION_TESTING)
 	enable_testing()
     add_subdirectory(test)
 endif()
