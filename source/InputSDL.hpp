@@ -28,7 +28,7 @@ private:
    EventList mGlobalEvents;
 
 public:
-    InputSDL(Runtime*, const Many&);
+    InputSDL(Runtime*, Many const&);
    ~InputSDL();
 
    void Create(Verb&);

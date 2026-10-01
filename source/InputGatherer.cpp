@@ -12,7 +12,7 @@
 /// Gatherer construction                                                     
 ///   @param producer - the input module                                      
 ///   @param descriptor - instructions for configuring the gatherer           
-InputGatherer::InputGatherer(InputSDL* producer, const Many& descriptor)
+InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
    : Resolvable   {this}
    , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
