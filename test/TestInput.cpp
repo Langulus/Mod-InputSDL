@@ -5,7 +5,7 @@
 ///                                                                           
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
-#include <Langulus/Input.hpp>
+#include <Langulus/CppAPI/Input.hpp>
 #include <Langulus/Testing.hpp>
 
 
@@ -18,19 +18,19 @@ SCENARIO("Input handler creation", "[input]") {
          auto root = Thing::Root<false>("InputSDL");
 
          WHEN("The input gatherer is created via abstractions") {
-            auto gatherer = root.CreateUnit<A::InputGatherer>();
-            auto listener = root.CreateUnit<A::InputListener>();
+            auto gatherer = root.CreateUnit<Things::InputGatherer>();
+            auto listener = root.CreateUnit<Things::InputListener>();
 
             // Update once                                              
             root.Update({});
             root.DumpHierarchy();
 
             REQUIRE(gatherer.GetCount() == 1);
-            REQUIRE(gatherer.CastsTo<A::InputGatherer>(1));
+            REQUIRE(gatherer.CastsTo<Things::InputGatherer>(1));
             REQUIRE(gatherer.IsSparse());
 
             REQUIRE(listener.GetCount() == 1);
-            REQUIRE(listener.CastsTo<A::InputListener>(1));
+            REQUIRE(listener.CastsTo<Things::InputListener>(1));
             REQUIRE(listener.IsSparse());
 
             REQUIRE(root.GetUnits().GetCount() == 2);
@@ -46,11 +46,11 @@ SCENARIO("Input handler creation", "[input]") {
             root.DumpHierarchy();
 
             REQUIRE(gatherer.GetCount() == 1);
-            REQUIRE(gatherer.CastsTo<A::InputGatherer>(1));
+            REQUIRE(gatherer.CastsTo<Things::InputGatherer>(1));
             REQUIRE(gatherer.IsSparse());
 
             REQUIRE(listener.GetCount() == 1);
-            REQUIRE(listener.CastsTo<A::InputListener>(1));
+            REQUIRE(listener.CastsTo<Things::InputListener>(1));
             REQUIRE(listener.IsSparse());
 
             REQUIRE(root.GetUnits().GetCount() == 2);

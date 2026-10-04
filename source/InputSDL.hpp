@@ -16,7 +16,7 @@
 /// Manages and produces input gatherers                                      
 ///                                                                           
 struct InputSDL final : A::InputModule {
-   LANGULUS(ABSTRACT) false;
+   using CTTI_Abstract = No;
    LANGULUS_BASES(A::InputModule);
    LANGULUS_VERBS(Verbs::Create);
 

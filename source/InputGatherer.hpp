@@ -7,10 +7,10 @@
 ///                                                                           
 #pragma once
 #include "InputListener.hpp"
-#include <Langulus/Flow/Factory.hpp>
-#include <Langulus/Flow/Producible.hpp>
+#include <Langulus/Factory.hpp>
+#include <Langulus/Producible.hpp>
 #include <Langulus/Verbs/Create.hpp>
-#include <Langulus/Verbs/Interact.hpp>
+#include <Langulus/Verbs/Emit.hpp>
 
 
 ///                                                                           
@@ -20,11 +20,11 @@
 /// Verbs::Interact that happens to occur in this context. After gathering    
 /// all events, they will be compiled and sent to all listeners on each tick. 
 ///                                                                           
-struct InputGatherer final : A::InputGatherer, ProducedFrom<InputSDL> {
-   LANGULUS(ABSTRACT) false;
-   LANGULUS(PRODUCER) InputSDL;
-   LANGULUS_BASES(A::InputGatherer);
-   LANGULUS_VERBS(Verbs::Create, Verbs::Interact);
+struct InputGatherer final : Things::InputGatherer, ProducedFrom<InputSDL> {
+   using CTTI_Abstract = No;
+   using CTTI_Producer = InputSDL;
+   using CTTI_Bases    = Things::InputGatherer;
+   using CTTI_Ability  = Types<Verbs::Create, Verbs::Emit>;
 
 private:
    // List of created input listeners                                   

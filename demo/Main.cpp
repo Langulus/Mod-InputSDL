@@ -5,7 +5,7 @@
 ///                                                                           
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
-#include <Langulus/Input.hpp>
+#include <Langulus/CppAPI/Input.hpp>
 #include <Langulus/Flow/Time.hpp>
 #include <thread>
 
@@ -18,7 +18,7 @@ int main(int, char**) {
 
    // Create root entity                                                
    auto root = Thing::Root<false>("InputSDL");
-   root.CreateUnits<A::InputGatherer, A::InputListener>();
+   root.CreateUnits<Things::InputGatherer, Things::InputListener>();
 
    while (true) {
       // Update until quit                                              

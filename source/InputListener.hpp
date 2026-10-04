@@ -6,10 +6,10 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #pragma once
-#include "Common.hpp"
-#include <Langulus/Flow/Factory.hpp>
-#include <Langulus/Flow/Producible.hpp>
-#include <Langulus/Flow/Time.hpp>
+#include "Export.hpp"
+#include <Langulus/Factory.hpp>
+#include <Langulus/Producible.hpp>
+#include <Langulus/Time.hpp>
 #include <Langulus/Verbs/Create.hpp>
 
 struct Anticipator;
@@ -20,11 +20,11 @@ struct Anticipator;
 ///                                                                           
 /// Reacts on events by executing custom scripts in the context of the owner  
 ///                                                                           
-struct InputListener final : A::InputListener, ProducedFrom<InputGatherer> {
-   LANGULUS(ABSTRACT) false;
-   LANGULUS(PRODUCER) InputGatherer;
-   LANGULUS_BASES(A::InputListener);
-   LANGULUS_VERBS(Verbs::Create);
+struct InputListener final : Things::InputListener, ProducedFrom<InputGatherer> {
+   using CTTI_Abstract = No;
+   using CTTI_Producer = InputGatherer;
+   using CTTI_Bases    = Things::InputListener;
+   using CTTI_Ability  = Verbs::Create;
 
 private:
    // Control factor (zero means no control, 1 means full control)      

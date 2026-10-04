@@ -6,7 +6,7 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #pragma once
-#include <Langulus/Input.hpp>
+#include <Langulus/CppAPI/Input.hpp>
 #include <Langulus/Math/Vector.hpp>
 
 using namespace Langulus;
