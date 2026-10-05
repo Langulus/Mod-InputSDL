@@ -35,7 +35,7 @@ InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
       return;
    }
 
-   LANGULUS_ASSERT(SDL_SetWindowRelativeMouseMode(mInputFocus, true) >= 0, Construct,
+   LglsAssert(SDL_SetWindowRelativeMouseMode(mInputFocus, true) >= 0,
       "SDL failed to set relative mouse mode. SDL_Error: ",
       SDL_GetError()
    );
