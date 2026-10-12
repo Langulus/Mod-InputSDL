@@ -6,7 +6,7 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include <Langulus/CppAPI/Input.hpp>
-#include <Langulus/Flow/Time.hpp>
+#include <Langulus/Time.hpp>
 #include <thread>
 
 LANGULUS_RTTI_BOUNDARY(RTTI::MainBoundary)
