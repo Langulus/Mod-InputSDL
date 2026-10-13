@@ -29,7 +29,7 @@ set(SDL_X11_XSCRNSAVER OFF CACHE BOOL "" FORCE)
 fetch_external_module(
     SDL
     GIT_REPOSITORY  https://github.com/libsdl-org/SDL.git
-    GIT_TAG         release-3.4.16
+    GIT_TAG         release-3.4.18
 )
 
 file(GLOB_RECURSE
