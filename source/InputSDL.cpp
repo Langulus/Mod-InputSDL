@@ -54,7 +54,7 @@ void InputSDL::Teardown() {
 ///   @param deltaTime - time between updates                                 
 ///   @return false if the UI requested exit                                  
 bool InputSDL::Update(Time deltaTime) {
-   LANGULUS(PROFILE);
+   LglsProfile();
    Math::Vec2f mouseMovement;
    Math::Vec2f mouseScroll;
    SDL_Event e;
