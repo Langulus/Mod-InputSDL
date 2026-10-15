@@ -38,8 +38,8 @@ SCENARIO("Input handler creation", "[input]") {
 
       #if LANGULUS_FEATURE(MANAGED_REFLECTION)
          WHEN("The input gatherer is created via tokens") {
-            auto gatherer = root.CreateUnitToken("InputGatherer");
-            auto listener = root.CreateUnitToken("InputListener");
+            auto gatherer = root.CreatePartToken("InputGatherer");
+            auto listener = root.CreatePartToken("InputListener");
 
             // Update once                                              
             root.Update({});
