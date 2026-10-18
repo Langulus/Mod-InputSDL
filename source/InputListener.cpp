@@ -66,17 +66,15 @@ void InputListener::AutoBind() {
 Anticipator::Anticipator(InputListener* producer, Many const& desc)
    : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
-   LANGULUS_ASSERT(
-         desc.ExtractData(mEvent)
-      or desc.ExtractData(mEvent.mType),
-      Construct, "Invalid event for anticipator from: ", desc);
+   LglsAssert(desc.ExtractData(mEvent) or desc.ExtractData(mEvent.mType),
+      "Invalid event for anticipator from: ", desc);
 
    // Optional state override                                           
    desc.ExtractData(mEvent.mState);
 
    // How do we react on trigger?                                       
-   LANGULUS_ASSERT(desc.ExtractData(mScript),
-      Construct, "Missing script for anticipator from: ", desc);
+   LglsAssert(desc.ExtractData(mScript), 
+      "Missing script for anticipator from: ", desc);
 
    // Add hierarchy and event payload as contexts, they will get        
    // updated on each interaction/listener environment refresh          

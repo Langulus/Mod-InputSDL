@@ -23,14 +23,14 @@ DMeta TranslateMouse(Uint8);
 ///   @param runtime - the runtime that owns the module                       
 ///   @param descriptor - instructions for configuring the module             
 InputSDL::InputSDL(Runtime* runtime, Many const&)
-   : Resolvable{this}
-   , Things::Module {runtime} {
+   : /*Resolvable{this}
+   ,*/ Things::Module {runtime} {
    // Reflect all event tokens                                          
    Langulus::RegisterEvents();
 
    // Initialize SDL for input                                          
    VERBOSE_INPUT("Initializing...");
-   LANGULUS_ASSERT(SDL_Init(SDL_INIT_GAMEPAD) >= 0, Construct,
+   LglsAssert(SDL_Init(SDL_INIT_GAMEPAD) >= 0,
       "SDL failed to initialize - no input will be available. SDL_Error: ",
       SDL_GetError()
    );
@@ -447,7 +447,7 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_CALL:                   TODO(); return {}; // missing
    case SDL_SCANCODE_ENDCALL:                TODO(); return {}; // missing
    default:
-      LANGULUS_OOPS(Meta, "Missing keyboard event");
+      LglsError("Missing keyboard event");
       return {};
    }
 }
@@ -463,7 +463,7 @@ DMeta TranslateMouse(Uint8 e) {
    case 6: return MetaOf<Keys::Mouse7>();
    case 7: return MetaOf<Keys::Mouse8>();
    default:
-      LANGULUS_OOPS(Meta, "Missing mouse button event");
+      LglsError("Missing mouse button event");
       return {};
    }
 }
