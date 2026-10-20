@@ -65,7 +65,7 @@ void InputGatherer::Create(Verb& verb) {
 ///   @param verb - interaction verb                                          
 void InputGatherer::Interact(Verb& verb) {
    // Gather the relevant events                                        
-   verb.ForEachDeep([&](const Event& e) {
+   verb.ForEachDeep([&](Event const& e) {
       PushEvent(e);
       verb.Done();
    });

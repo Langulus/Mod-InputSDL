@@ -15,9 +15,9 @@
 ///                                                                           
 /// Manages and produces input gatherers                                      
 ///                                                                           
-struct InputSDL final : A::InputModule {
+struct InputSDL final : Things::InputModule {
    using CTTI_Abstract = No;
-   LANGULUS_BASES(A::InputModule);
+   LANGULUS_BASES(Things::InputModule);
    LANGULUS_VERBS(Verbs::Create);
 
 private:
@@ -34,6 +34,6 @@ public:
    void Create(Verb&);
 
    bool Update(Time);
-   void PushEvent(const Event&);
+   void PushEvent(Event const&);
    void Teardown();
 };

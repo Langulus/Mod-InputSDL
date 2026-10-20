@@ -172,7 +172,7 @@ void InputSDL::Create(Verb& verb) {
 
 /// Push a global event, that will be propagated to all gatherers             
 ///   @param e - event to push                                                
-void InputSDL::PushEvent(const Event& e) {
+void InputSDL::PushEvent(Event const& e) {
    const auto foundEvent = mGlobalEvents.FindIt(e.mType);
    if (foundEvent) {
       const auto foundState = foundEvent.GetValue().FindIt(e.mState);
