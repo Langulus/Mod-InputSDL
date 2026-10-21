@@ -13,7 +13,7 @@
 ///   @param producer - the producer                                          
 ///   @param descriptor - instructions for configuring the listener           
 InputListener::InputListener(InputGatherer* producer, Many const& descriptor)
-   : Resolvable    {this}
+   : Downcastable    {this}
    , ProducedFrom  {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    Couple(descriptor);

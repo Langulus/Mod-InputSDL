@@ -13,7 +13,7 @@
 ///   @param producer - the input module                                      
 ///   @param descriptor - instructions for configuring the gatherer           
 InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
-   : Resolvable   {this}
+   : Downcastable   {this}
    , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    // Create an invisible window so that we can capture and track       
