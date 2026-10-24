@@ -10,8 +10,8 @@
 
 
 /// Gatherer construction                                                     
-///   @param producer - the input module                                      
-///   @param descriptor - instructions for configuring the gatherer           
+///   @param producer the input module                                        
+///   @param descriptor instructions for configuring the gatherer             
 InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
    : Downcastable   {this}
    , ProducedFrom {producer, descriptor} {
@@ -56,13 +56,13 @@ void InputGatherer::Teardown() {
 }
 
 /// Produce GUI elements in the system                                        
-///   @param verb - creation verb to satisfy                                  
+///   @param verb creation verb to satisfy                                    
 void InputGatherer::Create(Verb& verb) {
    mListeners.Create(this, verb);
 }
 
 /// Interact with all listeners                                               
-///   @param verb - interaction verb                                          
+///   @param verb interaction verb                                            
 void InputGatherer::Interact(Verb& verb) {
    // Gather the relevant events                                        
    verb.ForEachDeep([&](Event const& e) {
@@ -72,8 +72,8 @@ void InputGatherer::Interact(Verb& verb) {
 }
 
 /// System update routine                                                     
-///   @param deltaTime - time between updates                                 
-///   @param globalEvents - global list of events                             
+///   @param deltaTime time between updates                                   
+///   @param globalEvents global list of events                               
 ///   @return false if the system has been terminated by user request         
 bool InputGatherer::Update(Time deltaTime, const EventList& globalEvents) {
    // React to the gathered inputs                                      
