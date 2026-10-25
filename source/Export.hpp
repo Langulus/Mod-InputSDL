@@ -17,8 +17,8 @@ struct InputListener;
 
 #if 1
    #define VERBOSE_INPUT_ENABLED() 1
-   #define VERBOSE_INPUT(...)      Logger::Input(Self(), __VA_ARGS__)
-   #define VERBOSE_INPUT_TAB(...)  const auto tab = Logger::InputTab(Self(), __VA_ARGS__)
+   #define VERBOSE_INPUT(...)      Logger::Input(this, __VA_ARGS__)
+   #define VERBOSE_INPUT_TAB(...)  const auto tab = Logger::InputTab(this, __VA_ARGS__)
 #else
    #define VERBOSE_INPUT_ENABLED() 0
    #define VERBOSE_INPUT(...)      LANGULUS(NOOP)

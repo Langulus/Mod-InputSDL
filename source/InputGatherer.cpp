@@ -25,7 +25,7 @@ InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
 
    if (not mInputFocus) {
       // We're probably running without a desktop environment           
-      Logger::Warning(Self(),
+      Logger::Warning(this,
          "SDL failed to create input window - SDL won't be used for input. "
          "The gatherer can still collect input from other modules, like FTXUI or GLFW. "
          "SDL_Error: ", SDL_GetError()

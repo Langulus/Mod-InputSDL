@@ -20,11 +20,11 @@ DMeta TranslateKey(SDL_Scancode);
 DMeta TranslateMouse(Uint8);
 
 /// Module construction                                                       
-///   @param runtime - the runtime that owns the module                       
-///   @param descriptor - instructions for configuring the module             
+///   @param runtime the runtime that owns the module                         
+///   @param descriptor instructions for configuring the module               
 InputSDL::InputSDL(Runtime* runtime, Many const&)
-   : /*Resolvable{this}
-   ,*/ Things::Module {runtime} {
+   : Downcastable    {this}
+   , Things::Module  {runtime} {
    // Reflect all event tokens                                          
    Langulus::RegisterEvents();
 
@@ -175,13 +175,13 @@ void InputSDL::Create(Verb& verb) {
 void InputSDL::PushEvent(Event const& e) {
    const auto foundEvent = mGlobalEvents.FindIt(e.mType);
    if (foundEvent) {
-      const auto foundState = foundEvent.GetValue().FindIt(e.mState);
+      const auto foundState = foundEvent.GetVal().FindIt(e.mState);
       if (foundState) {
          // Event already exists, merge payload                         
-         foundState.GetValue().mPayload += e.mPayload;
+         foundState.GetVal().mPayload += e.mPayload;
          return;
       }
-      foundEvent.GetValue().Insert(e.mState, e);
+      foundEvent.GetVal().Insert(e.mState, e);
    }
    else {
       mGlobalEvents.Insert(e.mType);
