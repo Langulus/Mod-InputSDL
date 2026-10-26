@@ -172,7 +172,7 @@ bool Anticipator::Interact(const EventList& events) {
 
 /// Stringify the anticipator                                                 
 Anticipator::operator Text() const {
-   return Text::TemplateRt(
+   return Text::Format(
       "{}({}, {})", MetaOf<Anticipator>(), mEvent.mType, mScript
    );
 }
