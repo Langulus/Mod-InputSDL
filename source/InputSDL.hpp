@@ -14,11 +14,10 @@
 ///   Raw input module using SDL                                              
 ///                                                                           
 /// Manages and produces input gatherers                                      
-///                                                                           
 struct InputSDL final : Things::InputModule {
-   using CTTI_Abstract = No;
-   LANGULUS_BASES(Things::InputModule);
-   LANGULUS_VERBS(Verbs::Create);
+   using CTTI_Abstract  = No;
+   using CTTI_Bases     = Things::InputModule;
+   using CTTI_Ability   = Verbs::Create;
 
 private:
    // List of created input gatherers                                   
