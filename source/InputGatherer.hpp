@@ -19,7 +19,6 @@
 /// Collects all input events that are provided either by SDL, or by any      
 /// Verbs::Interact that happens to occur in this context. After gathering    
 /// all events, they will be compiled and sent to all listeners on each tick. 
-///                                                                           
 struct InputGatherer final : Things::InputGatherer, ProducedFrom<InputSDL> {
    using CTTI_Abstract = No;
    using CTTI_Producer = InputSDL;
@@ -35,13 +34,13 @@ private:
    SDL_Window* mInputFocus {};
 
 public:
-    InputGatherer(InputSDL*, Many const&);
+    InputGatherer(InputSDL*, Neat const&);
    ~InputGatherer();
 
    void Create(Verb&);
    void Interact(Verb&);
 
-   bool Update(Time, const EventList&);
+   bool Update(Time, EventList const&);
    void Refresh();
    void Teardown();
 };

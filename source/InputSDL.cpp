@@ -6,6 +6,7 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include "InputSDL.hpp"
+#include <Langulus/Profiler.hpp>
 
 LANGULUS_DEFINE_MODULE(
    InputSDL, 0, "InputSDL",
@@ -22,9 +23,9 @@ DMeta TranslateMouse(Uint8);
 /// Module construction                                                       
 ///   @param runtime the runtime that owns the module                         
 ///   @param descriptor instructions for configuring the module               
-InputSDL::InputSDL(Runtime* runtime, Many const&)
-   : Downcastable    {this}
-   , Things::Module  {runtime} {
+InputSDL::InputSDL(Runtime* runtime, Neat const&)
+   : Downcastable {this}
+   , Module       {runtime} {
    // Reflect all event tokens                                          
    Langulus::RegisterEvents();
 
@@ -51,7 +52,7 @@ void InputSDL::Teardown() {
 }
 
 /// Module update routine                                                     
-///   @param deltaTime - time between updates                                 
+///   @param deltaTime time between updates                                   
 ///   @return false if the UI requested exit                                  
 bool InputSDL::Update(Time deltaTime) {
    LglsProfile();
@@ -165,13 +166,13 @@ bool InputSDL::Update(Time deltaTime) {
 }
 
 /// Create/Destroy GUI systems                                                
-///   @param verb - the creation/destruction verb                             
+///   @param verb the creation/destruction verb                               
 void InputSDL::Create(Verb& verb) {
    mGatherers.Create(this, verb);
 }
 
 /// Push a global event, that will be propagated to all gatherers             
-///   @param e - event to push                                                
+///   @param e event to push                                                  
 void InputSDL::PushEvent(Event const& e) {
    const auto foundEvent = mGlobalEvents.FindIt(e.mType);
    if (foundEvent) {
@@ -191,7 +192,7 @@ void InputSDL::PushEvent(Event const& e) {
 }
 
 /// SDL3 keyboard event -> Langulus event translator                          
-///   @param i - the code to translate                                        
+///   @param i the code to translate                                          
 ///   @return the translated event                                            
 DMeta TranslateKey(SDL_Scancode i) {
    switch (i) {

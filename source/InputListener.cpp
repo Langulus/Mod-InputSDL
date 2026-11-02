@@ -10,11 +10,11 @@
 
 
 /// Listener construction                                                     
-///   @param producer - the producer                                          
-///   @param descriptor - instructions for configuring the listener           
-InputListener::InputListener(InputGatherer* producer, Many const& descriptor)
-   : Downcastable    {this}
-   , ProducedFrom  {producer, descriptor} {
+///   @param producer the producer                                            
+///   @param descriptor instructions for configuring the listener             
+InputListener::InputListener(InputGatherer* producer, Neat const& descriptor)
+   : Downcastable {this}
+   , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    Couple(descriptor);
    VERBOSE_INPUT("Initialized");
@@ -31,15 +31,15 @@ void InputListener::Refresh() {
 }
 
 /// Create/remove anticipators to/from the listener                           
-///   @param verb - the creation verb                                         
+///   @param verb the creation verb                                           
 void InputListener::Create(Verb& verb) {
    mAnticipators.Create(this, verb);
 }
 
 /// React on events                                                           
-///   @param deltaTime - time between Update calls                            
-///   @param events - events to react to                                      
-void InputListener::Update(const Time& deltaTime, const EventList& events) {
+///   @param deltaTime time between Update calls                              
+///   @param events events to react to                                        
+void InputListener::Update(Time const& deltaTime, EventList const& events) {
    // Execute all active anticipators' scripts                          
    for (auto& ant : mAnticipators) {
       if (not ant.Interact(events))
@@ -61,9 +61,9 @@ void InputListener::AutoBind() {
 }
 
 /// Anticipator constructor                                                   
-///   @param producer - the producer of the anticipator                       
-///   @param desc - descriptor                                                
-Anticipator::Anticipator(InputListener* producer, Many const& desc)
+///   @param producer the producer of the anticipator                         
+///   @param desc descriptor                                                  
+Anticipator::Anticipator(InputListener* producer, Neat const& desc)
    : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
    LglsAssert(desc.ExtractData(mEvent) or desc.ExtractData(mEvent.mType),
@@ -87,10 +87,10 @@ Anticipator::Anticipator(InputListener* producer, Many const& desc)
 }
 
 /// Interact with the anticipator                                             
-///   @param events - the events                                              
+///   @param events the events                                                
 ///   @return true if the anticipator is a 'hold' event and needs to be       
 ///      handled in the Update() routine instead                              
-bool Anticipator::Interact(const EventList& events) {
+bool Anticipator::Interact(EventList const& events) {
    Many unusedSideEffects;
    auto foundEvent = events.FindIt(mEvent.mType);
    if (not foundEvent)

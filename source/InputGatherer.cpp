@@ -12,8 +12,8 @@
 /// Gatherer construction                                                     
 ///   @param producer the input module                                        
 ///   @param descriptor instructions for configuring the gatherer             
-InputGatherer::InputGatherer(InputSDL* producer, Many const& descriptor)
-   : Downcastable   {this}
+InputGatherer::InputGatherer(InputSDL* producer, Neat const& descriptor)
+   : Downcastable {this}
    , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
    // Create an invisible window so that we can capture and track       
@@ -75,7 +75,7 @@ void InputGatherer::Interact(Verb& verb) {
 ///   @param deltaTime time between updates                                   
 ///   @param globalEvents global list of events                               
 ///   @return false if the system has been terminated by user request         
-bool InputGatherer::Update(Time deltaTime, const EventList& globalEvents) {
+bool InputGatherer::Update(Time deltaTime, EventList const& globalEvents) {
    // React to the gathered inputs                                      
    for (auto& listener : mListeners) {
       listener.Update(deltaTime, globalEvents);

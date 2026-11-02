@@ -19,7 +19,6 @@ struct Anticipator;
 ///   Input listener                                                          
 ///                                                                           
 /// Reacts on events by executing custom scripts in the context of the owner  
-///                                                                           
 struct InputListener final : Things::InputListener, ProducedFrom<InputGatherer> {
    using CTTI_Abstract = No;
    using CTTI_Producer = InputGatherer;
@@ -36,10 +35,10 @@ private:
    void AutoBind();
 
 public:
-   InputListener(InputGatherer*, Many const&);
+   InputListener(InputGatherer*, Neat const&);
 
    void Create(Verb&);
-   void Update(const Time&, const EventList&);
+   void Update(Time const&, EventList const&);
    void Refresh();
    void Teardown();
 };
@@ -51,10 +50,8 @@ public:
 /// An input pair used to map an event pattern to a script, track time since  
 /// last interaction, count interactions, track state, etc. This anticipator  
 /// should anticipate more complex patterns in the future, like gestures.     
-///                                                                           
 struct Anticipator : Referenced, ProducedFrom<InputListener> {
-   LANGULUS_CONVERTS_TO(Text);
-   LANGULUS_PRODUCER() InputListener;
+   using CTTI_Producer = InputListener;
 
    // Event and state on which anticipator reacts                       
    // Contained payload acts as a context for the precompiled flow      
@@ -62,18 +59,15 @@ struct Anticipator : Referenced, ProducedFrom<InputListener> {
    // Marks the anticipator as active in case of Begin/End events       
    bool mActive = false;
    // Script                                                            
-   Code mScript;
+   Flow::Code mScript;
    // Precompiled mScript to execute as event reaction                  
    Temporal mFlow;
 
 public:
-   Anticipator(InputListener*, Many const&);
+   Anticipator(InputListener*, Neat const&);
 
-   bool Interact(const EventList&);
+   bool Interact(EventList const&);
 
    explicit operator Text() const;
-
-protected:
-   Text Self() const { return operator Text() + ": "; }
 };
 
