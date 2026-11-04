@@ -12,7 +12,7 @@
 /// Listener construction                                                     
 ///   @param producer the producer                                            
 ///   @param descriptor instructions for configuring the listener             
-InputListener::InputListener(InputGatherer* producer, Neat const& descriptor)
+InputListener::InputListener(InputGatherer const* producer, Neat const& descriptor)
    : Downcastable {this}
    , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");
@@ -63,7 +63,7 @@ void InputListener::AutoBind() {
 /// Anticipator constructor                                                   
 ///   @param producer the producer of the anticipator                         
 ///   @param desc descriptor                                                  
-Anticipator::Anticipator(InputListener* producer, Neat const& desc)
+Anticipator::Anticipator(InputListener const* producer, Neat const& desc)
    : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
    LglsAssert(desc.ExtractData(mEvent) or desc.ExtractData(mEvent.mType),

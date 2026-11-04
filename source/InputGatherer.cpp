@@ -12,7 +12,7 @@
 /// Gatherer construction                                                     
 ///   @param producer the input module                                        
 ///   @param descriptor instructions for configuring the gatherer             
-InputGatherer::InputGatherer(InputSDL* producer, Neat const& descriptor)
+InputGatherer::InputGatherer(InputSDL const* producer, Neat const& descriptor)
    : Downcastable {this}
    , ProducedFrom {producer, descriptor} {
    VERBOSE_INPUT("Initializing...");

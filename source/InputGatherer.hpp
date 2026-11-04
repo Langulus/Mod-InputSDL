@@ -34,7 +34,7 @@ private:
    SDL_Window* mInputFocus {};
 
 public:
-    InputGatherer(InputSDL*, Neat const&);
+    InputGatherer(InputSDL const*, Neat const&);
    ~InputGatherer();
 
    void Create(Verb&);
