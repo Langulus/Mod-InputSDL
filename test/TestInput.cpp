@@ -33,7 +33,7 @@ SCENARIO("Input handler creation", "[input]") {
             REQUIRE(listener.CastsTo<Things::InputListener>(1));
             REQUIRE(listener.IsSparse());
 
-            REQUIRE(root.GetUnits().GetCount() == 2);
+            REQUIRE(root.GetParts().GetCount() == 2);
          }
 
       #if LANGULUS_FEATURE(MANAGED_REFLECTION)
@@ -53,7 +53,7 @@ SCENARIO("Input handler creation", "[input]") {
             REQUIRE(listener.CastsTo<Things::InputListener>(1));
             REQUIRE(listener.IsSparse());
 
-            REQUIRE(root.GetUnits().GetCount() == 2);
+            REQUIRE(root.GetParts().GetCount() == 2);
          }
       #endif
 
