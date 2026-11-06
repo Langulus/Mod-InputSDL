@@ -11,8 +11,37 @@
 #include <Langulus/Producible.hpp>
 #include <Langulus/Time.hpp>
 #include <Langulus/Verbs/Create.hpp>
+#include <Langulus/Event.hpp>
 
 struct Anticipator;
+
+
+///                                                                           
+///   Anticipator                                                             
+///                                                                           
+/// An input pair used to map an event pattern to a script, track time since  
+/// last interaction, count interactions, track state, etc. This anticipator  
+/// should anticipate more complex patterns in the future, like gestures.     
+struct Anticipator : Referenced, ProducedFrom<InputListener> {
+   using CTTI_Producer = InputListener;
+
+   // Event and state on which anticipator reacts                       
+   // Contained payload acts as a context for the precompiled flow      
+   Event mEvent;
+   // Marks the anticipator as active in case of Begin/End events       
+   bool mActive = false;
+   // Script                                                            
+   Flow::Code mScript;
+   // Precompiled mScript to execute as event reaction                  
+   Temporal mFlow;
+
+public:
+   Anticipator(InputListener const*, Neat const&);
+
+   bool Interact(EventList const&);
+
+   explicit operator Text() const;
+};
 
 
 ///                                                                           
@@ -41,33 +70,5 @@ public:
    void Update(Time const&, EventList const&);
    void Refresh();
    void Teardown();
-};
-
-
-///                                                                           
-///   Anticipator                                                             
-///                                                                           
-/// An input pair used to map an event pattern to a script, track time since  
-/// last interaction, count interactions, track state, etc. This anticipator  
-/// should anticipate more complex patterns in the future, like gestures.     
-struct Anticipator : Referenced, ProducedFrom<InputListener> {
-   using CTTI_Producer = InputListener;
-
-   // Event and state on which anticipator reacts                       
-   // Contained payload acts as a context for the precompiled flow      
-   Event mEvent;
-   // Marks the anticipator as active in case of Begin/End events       
-   bool mActive = false;
-   // Script                                                            
-   Flow::Code mScript;
-   // Precompiled mScript to execute as event reaction                  
-   Temporal mFlow;
-
-public:
-   Anticipator(InputListener const*, Neat const&);
-
-   bool Interact(EventList const&);
-
-   explicit operator Text() const;
 };
 

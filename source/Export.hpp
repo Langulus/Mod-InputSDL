@@ -15,6 +15,8 @@ struct InputSDL;
 struct InputGatherer;
 struct InputListener;
 
+using EventList = TMapUnsorted<RTTI::DMeta, TMapUnsorted<EventState, Event>>;
+
 #if 1
    #define VERBOSE_INPUT_ENABLED() 1
    #define VERBOSE_INPUT(...)      Logger::Input(this, __VA_ARGS__)
