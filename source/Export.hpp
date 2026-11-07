@@ -10,12 +10,12 @@
 #include <Langulus/Math/Vector.hpp>
 
 using namespace Langulus;
+using Things::EventSignature;
+using Things::EventQueue;
 
 struct InputSDL;
 struct InputGatherer;
 struct InputListener;
-
-using EventList = TMapUnsorted<RTTI::DMeta, TMapUnsorted<EventState, Event>>;
 
 #if 1
    #define VERBOSE_INPUT_ENABLED() 1

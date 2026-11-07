@@ -24,7 +24,7 @@ private:
    TFactory<InputGatherer> mGatherers;
 
    // Global list of events                                             
-   EventList mGlobalEvents;
+   EventQueue mGlobalEvents;
 
 public:
     InputSDL(Runtime*, Neat const&);

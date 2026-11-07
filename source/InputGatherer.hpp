@@ -40,7 +40,7 @@ public:
    void Create(Verb&);
    void Interact(Verb&);
 
-   bool Update(Time, EventList const&);
+   bool Update(Time, EventQueue const&);
    void Refresh();
    void Teardown();
 };

@@ -39,7 +39,7 @@ void InputListener::Create(Verb& verb) {
 /// React on events                                                           
 ///   @param deltaTime time between Update calls                              
 ///   @param events events to react to                                        
-void InputListener::Update(Time const& deltaTime, EventList const& events) {
+void InputListener::Update(Time const& deltaTime, EventQueue const& events) {
    // Execute all active anticipators' scripts                          
    for (auto& ant : mAnticipators) {
       if (not ant.Interact(events))
@@ -47,7 +47,7 @@ void InputListener::Update(Time const& deltaTime, EventList const& events) {
       
       // The anticipator is active and needs to be updated each         
       // tick. This is essentially a 'hold' event                       
-      VERBOSE_INPUT("Hold event triggered: ", ant.mEvent);
+      VERBOSE_INPUT("Hold event triggered: ", ant.mEventType);
       Many unusedSideEffects;
       ant.mFlow.Update(deltaTime, unusedSideEffects);
    }
@@ -66,11 +66,16 @@ void InputListener::AutoBind() {
 Anticipator::Anticipator(InputListener const* producer, Neat const& desc)
    : ProducedFrom {producer, desc} {
    // What event are we anticipating?                                   
-   LglsAssert(desc.ExtractData(mEvent) or desc.ExtractData(mEvent.mType),
-      "Invalid event for anticipator from: ", desc);
+   Event event;
+   if (desc.ExtractData(event))
+      Update(event);
+   else {
+      LglsAssert(desc.ExtractData(mEventType),
+         "Invalid event for anticipator from: ", desc);
 
-   // Optional state override                                           
-   desc.ExtractData(mEvent.mState);
+      // Optional state override                                        
+      desc.ExtractData(mEventState);
+   }
 
    // How do we react on trigger?                                       
    LglsAssert(desc.ExtractData(mScript), 
@@ -78,9 +83,9 @@ Anticipator::Anticipator(InputListener const* producer, Neat const& desc)
 
    // Add hierarchy and event payload as contexts, they will get        
    // updated on each interaction/listener environment refresh          
-   mFlow.Push(&producer->GetOwners(), &mEvent.mPayload, mScript.Parse());
+   mFlow.Push(&producer->GetOwners(), &mEventPayload, mScript.Parse());
 
-   VERBOSE_INPUT("Anticipator for ", mEvent.mType, " ", mEvent.mState, " compiled: ");
+   VERBOSE_INPUT("Anticipator for ", mEventType, " (", mEventState, ") compiled: ");
    #if VERBOSE_INPUT_ENABLED()
       mFlow.Dump();
    #endif
@@ -90,78 +95,66 @@ Anticipator::Anticipator(InputListener const* producer, Neat const& desc)
 ///   @param events the events                                                
 ///   @return true if the anticipator is a 'hold' event and needs to be       
 ///      handled in the Update() routine instead                              
-bool Anticipator::Interact(EventList const& events) {
+bool Anticipator::Interact(EventQueue const& events) {
    Many unusedSideEffects;
-   auto foundEvent = events.FindIt(mEvent.mType);
+   const auto signature = EventSignature {mEventType, mEventState};
+   const auto foundEvent = events.Find(signature);
    if (not foundEvent)
       return false;
 
-   if (mEvent.mState == EventState::Point) {
+   if (mEventState == EventState::Point) {
       // Anticipator doesn't activate - its script will just be         
       // executed once and then reset                                   
-      const auto foundState1 = foundEvent.GetVal().FindIt(EventState::Point);
-      const auto foundState2 = foundEvent.GetVal().FindIt(EventState::Begin);
-      if (foundState1 or foundState2) {
-         if (foundState1)
-            mEvent = foundState1.GetVal();
-         if (foundState2 and mEvent.mTimestamp < foundState2.GetVal().mTimestamp)
-            mEvent = foundState2.GetVal();
+      Update(*foundEvent);
 
-         VERBOSE_INPUT("Point event triggered: ", mEvent);
-         #if VERBOSE_INPUT_ENABLED()
-            mFlow.Dump();
-         #endif
+      VERBOSE_INPUT("Point event triggered: ", mEventType);
+      #if VERBOSE_INPUT_ENABLED()
+         mFlow.Dump();
+      #endif
 
-         mFlow.Reset();
-         mFlow.Update({}, unusedSideEffects);
-      }
+      mFlow.Reset();
+      mFlow.Update({}, unusedSideEffects);
    }
-   else if (mEvent.mState == EventState::Begin) {
+   else if (mEventState == EventState::Begin) {
       // Anticipator doesn't activate - its script will just be         
       // executed once on a Begin event                                 
-      const auto foundState = foundEvent.GetVal().FindIt(EventState::Begin);
-      if (foundState) {
-         mEvent = foundState.GetVal();
+      Update(*foundEvent);
 
-         VERBOSE_INPUT("Begin event triggered: ", mEvent);
-         #if VERBOSE_INPUT_ENABLED()
-            mFlow.Dump();
-         #endif
+      VERBOSE_INPUT("Begin event triggered: ", mEventType);
+      #if VERBOSE_INPUT_ENABLED()
+         mFlow.Dump();
+      #endif
 
-         mFlow.Reset();
-         mFlow.Update({}, unusedSideEffects);
-      }
+      mFlow.Reset();
+      mFlow.Update({}, unusedSideEffects);
    }
-   else if (mEvent.mState == EventState::End) {
+   else if (mEventState == EventState::End) {
       // Anticipator doesn't activate - its script will just be         
       // executed once on an End event                                  
-      const auto foundState = foundEvent.GetVal().FindIt(EventState::End);
-      if (foundState) {
-         mEvent = foundState.GetVal();
+      Update(*foundEvent);
 
-         VERBOSE_INPUT("End event triggered: ", mEvent);
-         #if VERBOSE_INPUT_ENABLED()
-            mFlow.Dump();
-         #endif
+      VERBOSE_INPUT("End event triggered: ", mEventType);
+      #if VERBOSE_INPUT_ENABLED()
+         mFlow.Dump();
+      #endif
 
-         mFlow.Reset();
-         mFlow.Update({}, unusedSideEffects);
-      }
+      mFlow.Reset();
+      mFlow.Update({}, unusedSideEffects);
    }
    else {
       // Anticipator activates on Begin event, deactivates on an End    
       // event, and shall execute its script on each tick inbetween     
       // This is a 'hold' event and is handled from the Update routine  
       if (not mActive) {
-         const auto foundState = foundEvent.GetVal().FindIt(EventState::Begin);
+         const auto foundState = foundEvent.GetVal().Find(EventState::Begin);
          if (foundState) {
-            mEvent = foundState.GetVal();
+            Update(foundState.GetVal());
             mActive = true;
             mFlow.Reset();
          }
       }
       else {
-         const auto foundState = foundEvent.GetVal().FindIt(EventState::End);
+         const auto foundState = foundEvent.GetVal().Find(EventState::End);
          if (foundState)
             mActive = false;
       }
@@ -173,6 +166,6 @@ bool Anticipator::Interact(EventList const& events) {
 /// Stringify the anticipator                                                 
 Anticipator::operator Text() const {
    return Text::Format(
-      "{}({}, {})", MetaOf<Anticipator>(), mEvent.mType, mScript
+      "{}(on {} {}: {})", MetaDataOf<Anticipator>(), mEventType, mEventState, mScript
    );
 }

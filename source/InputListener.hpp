@@ -25,9 +25,23 @@ struct Anticipator;
 struct Anticipator : Referenced, ProducedFrom<InputListener> {
    using CTTI_Producer = InputListener;
 
+protected:
+   friend struct InputListener;
+   
    // Event and state on which anticipator reacts                       
    // Contained payload acts as a context for the precompiled flow      
-   Event mEvent;
+   RTTI::DMeta mEventType;
+   EventState mEventState;
+   Many mEventPayload;
+   TimePoint mEventTimestamp;
+
+   void Update(Event const& src) { //TODO event decomposition is required cuz we can't get pointer to payload. fix it eventually with Com::Composite
+      mEventType = src.GetEvent();
+      mEventState = src.GetEventState();
+      mEventPayload = src.GetPayload();
+      mEventTimestamp = src.GetTimestamp();
+   }
+
    // Marks the anticipator as active in case of Begin/End events       
    bool mActive = false;
    // Script                                                            
@@ -38,7 +52,7 @@ struct Anticipator : Referenced, ProducedFrom<InputListener> {
 public:
    Anticipator(InputListener const*, Neat const&);
 
-   bool Interact(EventList const&);
+   bool Interact(EventQueue const&);
 
    explicit operator Text() const;
 };
@@ -57,7 +71,7 @@ struct InputListener final : Things::InputListener, ProducedFrom<InputGatherer> 
 private:
    // Control factor (zero means no control, 1 means full control)      
    // Acts as mass modifier for executed scripts                        
-   Real mControlFactor = 1;
+   [[maybe_unused]] Real mControlFactor = 1;
    // Anticipators that react on events                                 
    TFactoryUnique<Anticipator> mAnticipators;
 
@@ -67,7 +81,7 @@ public:
    InputListener(InputGatherer const*, Neat const&);
 
    void Create(Verb&);
-   void Update(Time const&, EventList const&);
+   void Update(Time const&, EventQueue const&);
    void Refresh();
    void Teardown();
 };
