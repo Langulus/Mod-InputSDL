@@ -17,8 +17,9 @@ LANGULUS_DEFINE_MODULE(
 )
 
 
-DMeta TranslateKey(SDL_Scancode);
-DMeta TranslateMouse(Uint8);
+RTTI::DMeta TranslateKey(SDL_Scancode);
+RTTI::DMeta TranslateMouse(Uint8);
+
 
 /// Module construction                                                       
 ///   @param runtime the runtime that owns the module                         
@@ -101,18 +102,20 @@ bool InputSDL::Update(Time deltaTime) {
          break;
       case SDL_EVENT_MOUSE_BUTTON_DOWN: {
          // Mouse key was pressed                                       
-         Event newEvent;
-         newEvent.mType = TranslateMouse(e.button.button);
-         newEvent.mState = EventState::Begin;
+         auto newEvent = Event::From(
+            TranslateMouse(e.button.button),
+            EventState::Begin
+         );
          VERBOSE_INPUT("Mouse button pressed: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }
       case SDL_EVENT_MOUSE_BUTTON_UP: {
          // Mouse key was released                                      
-         Event newEvent;
-         newEvent.mType = TranslateMouse(e.button.button);
-         newEvent.mState = EventState::End;
+         auto newEvent = Event::From(
+            TranslateMouse(e.button.button),
+            EventState::End
+         );
          VERBOSE_INPUT("Mouse button released: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
@@ -131,18 +134,20 @@ bool InputSDL::Update(Time deltaTime) {
       }
       case SDL_EVENT_KEY_DOWN: {
          // Keyboard key was pressed down                               
-         Event newEvent;
-         newEvent.mType = TranslateKey(e.key.scancode);
-         newEvent.mState = EventState::Begin;
+         auto newEvent = Event::From(
+            TranslateKey(e.key.scancode),
+            EventState::Begin
+         );
          VERBOSE_INPUT("Keyboard button pressed: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
       }
       case SDL_EVENT_KEY_UP: {
          // Keyboard key was released                                   
-         Event newEvent;
-         newEvent.mType = TranslateKey(e.key.scancode);
-         newEvent.mState = EventState::End;
+         auto newEvent = Event::From(
+            TranslateKey(e.key.scancode),
+            EventState::End
+         );
          VERBOSE_INPUT("Keyboard button released: ", newEvent.mType.GetToken());
          PushEvent(newEvent);
          break;
@@ -174,147 +179,147 @@ void InputSDL::Create(Verb& verb) {
 /// Push a global event, that will be propagated to all gatherers             
 ///   @param e event to push                                                  
 void InputSDL::PushEvent(Event const& e) {
-   const auto foundEvent = mGlobalEvents.FindIt(e.mType);
+   const auto foundEvent = mGlobalEvents.Find(e.mType);
    if (foundEvent) {
-      const auto foundState = foundEvent.GetVal().FindIt(e.mState);
+      auto foundState = foundEvent.GetVal().Find(e.mState);
       if (foundState) {
          // Event already exists, merge payload                         
          foundState.GetVal().mPayload += e.mPayload;
          return;
       }
-      foundEvent.GetVal().Insert(e.mState, e);
+      foundEvent.GetVal().Merge(e.mState, e);
    }
    else {
-      mGlobalEvents.Insert(e.mType);
+      mGlobalEvents.Merge(e.mType);
       auto& newGroup = mGlobalEvents[e.mType];
-      newGroup.Insert(e.mState, e);
+      newGroup.Merge(e.mState, e);
    }
 }
 
 /// SDL3 keyboard event -> Langulus event translator                          
 ///   @param i the code to translate                                          
 ///   @return the translated event                                            
-DMeta TranslateKey(SDL_Scancode i) {
+RTTI::DMeta TranslateKey(SDL_Scancode i) {
    switch (i) {
-   case SDL_SCANCODE_A:             return MetaOf<Keys::A>();
-   case SDL_SCANCODE_B:             return MetaOf<Keys::B>();
-   case SDL_SCANCODE_C:             return MetaOf<Keys::C>();
-   case SDL_SCANCODE_D:             return MetaOf<Keys::D>();
-   case SDL_SCANCODE_E:             return MetaOf<Keys::E>();
-   case SDL_SCANCODE_F:             return MetaOf<Keys::F>();
-   case SDL_SCANCODE_G:             return MetaOf<Keys::G>();
-   case SDL_SCANCODE_H:             return MetaOf<Keys::H>();
-   case SDL_SCANCODE_I:             return MetaOf<Keys::I>();
-   case SDL_SCANCODE_J:             return MetaOf<Keys::J>();
-   case SDL_SCANCODE_K:             return MetaOf<Keys::K>();
-   case SDL_SCANCODE_L:             return MetaOf<Keys::L>();
-   case SDL_SCANCODE_M:             return MetaOf<Keys::M>();
-   case SDL_SCANCODE_N:             return MetaOf<Keys::N>();
-   case SDL_SCANCODE_O:             return MetaOf<Keys::O>();
-   case SDL_SCANCODE_P:             return MetaOf<Keys::P>();
-   case SDL_SCANCODE_Q:             return MetaOf<Keys::Q>();
-   case SDL_SCANCODE_R:             return MetaOf<Keys::R>();
-   case SDL_SCANCODE_S:             return MetaOf<Keys::S>();
-   case SDL_SCANCODE_T:             return MetaOf<Keys::T>();
-   case SDL_SCANCODE_U:             return MetaOf<Keys::U>();
-   case SDL_SCANCODE_V:             return MetaOf<Keys::V>();
-   case SDL_SCANCODE_W:             return MetaOf<Keys::W>();
-   case SDL_SCANCODE_X:             return MetaOf<Keys::X>();
-   case SDL_SCANCODE_Y:             return MetaOf<Keys::Y>();
-   case SDL_SCANCODE_Z:             return MetaOf<Keys::Z>();
+   case SDL_SCANCODE_A:             return MetaDataOf<Keys::A>();
+   case SDL_SCANCODE_B:             return MetaDataOf<Keys::B>();
+   case SDL_SCANCODE_C:             return MetaDataOf<Keys::C>();
+   case SDL_SCANCODE_D:             return MetaDataOf<Keys::D>();
+   case SDL_SCANCODE_E:             return MetaDataOf<Keys::E>();
+   case SDL_SCANCODE_F:             return MetaDataOf<Keys::F>();
+   case SDL_SCANCODE_G:             return MetaDataOf<Keys::G>();
+   case SDL_SCANCODE_H:             return MetaDataOf<Keys::H>();
+   case SDL_SCANCODE_I:             return MetaDataOf<Keys::I>();
+   case SDL_SCANCODE_J:             return MetaDataOf<Keys::J>();
+   case SDL_SCANCODE_K:             return MetaDataOf<Keys::K>();
+   case SDL_SCANCODE_L:             return MetaDataOf<Keys::L>();
+   case SDL_SCANCODE_M:             return MetaDataOf<Keys::M>();
+   case SDL_SCANCODE_N:             return MetaDataOf<Keys::N>();
+   case SDL_SCANCODE_O:             return MetaDataOf<Keys::O>();
+   case SDL_SCANCODE_P:             return MetaDataOf<Keys::P>();
+   case SDL_SCANCODE_Q:             return MetaDataOf<Keys::Q>();
+   case SDL_SCANCODE_R:             return MetaDataOf<Keys::R>();
+   case SDL_SCANCODE_S:             return MetaDataOf<Keys::S>();
+   case SDL_SCANCODE_T:             return MetaDataOf<Keys::T>();
+   case SDL_SCANCODE_U:             return MetaDataOf<Keys::U>();
+   case SDL_SCANCODE_V:             return MetaDataOf<Keys::V>();
+   case SDL_SCANCODE_W:             return MetaDataOf<Keys::W>();
+   case SDL_SCANCODE_X:             return MetaDataOf<Keys::X>();
+   case SDL_SCANCODE_Y:             return MetaDataOf<Keys::Y>();
+   case SDL_SCANCODE_Z:             return MetaDataOf<Keys::Z>();
 
-   case SDL_SCANCODE_1:             return MetaOf<Keys::Main1>();
-   case SDL_SCANCODE_2:             return MetaOf<Keys::Main2>();
-   case SDL_SCANCODE_3:             return MetaOf<Keys::Main3>();
-   case SDL_SCANCODE_4:             return MetaOf<Keys::Main4>();
-   case SDL_SCANCODE_5:             return MetaOf<Keys::Main5>();
-   case SDL_SCANCODE_6:             return MetaOf<Keys::Main6>();
-   case SDL_SCANCODE_7:             return MetaOf<Keys::Main7>();
-   case SDL_SCANCODE_8:             return MetaOf<Keys::Main8>();
-   case SDL_SCANCODE_9:             return MetaOf<Keys::Main9>();
-   case SDL_SCANCODE_0:             return MetaOf<Keys::Main0>();
+   case SDL_SCANCODE_1:             return MetaDataOf<Keys::Main1>();
+   case SDL_SCANCODE_2:             return MetaDataOf<Keys::Main2>();
+   case SDL_SCANCODE_3:             return MetaDataOf<Keys::Main3>();
+   case SDL_SCANCODE_4:             return MetaDataOf<Keys::Main4>();
+   case SDL_SCANCODE_5:             return MetaDataOf<Keys::Main5>();
+   case SDL_SCANCODE_6:             return MetaDataOf<Keys::Main6>();
+   case SDL_SCANCODE_7:             return MetaDataOf<Keys::Main7>();
+   case SDL_SCANCODE_8:             return MetaDataOf<Keys::Main8>();
+   case SDL_SCANCODE_9:             return MetaDataOf<Keys::Main9>();
+   case SDL_SCANCODE_0:             return MetaDataOf<Keys::Main0>();
 
-   case SDL_SCANCODE_RETURN:        return MetaOf<Keys::Enter>(); 
-   case SDL_SCANCODE_ESCAPE:        return MetaOf<Keys::Escape>();
-   case SDL_SCANCODE_BACKSPACE:     return MetaOf<Keys::Back>();  
-   case SDL_SCANCODE_TAB:           return MetaOf<Keys::Tab>();   
-   case SDL_SCANCODE_SPACE:         return MetaOf<Keys::Space>(); 
-   case SDL_SCANCODE_MINUS:         return MetaOf<Keys::Minus>(); 
+   case SDL_SCANCODE_RETURN:        return MetaDataOf<Keys::Enter>(); 
+   case SDL_SCANCODE_ESCAPE:        return MetaDataOf<Keys::Escape>();
+   case SDL_SCANCODE_BACKSPACE:     return MetaDataOf<Keys::Back>();  
+   case SDL_SCANCODE_TAB:           return MetaDataOf<Keys::Tab>();   
+   case SDL_SCANCODE_SPACE:         return MetaDataOf<Keys::Space>(); 
+   case SDL_SCANCODE_MINUS:         return MetaDataOf<Keys::Minus>(); 
    case SDL_SCANCODE_EQUALS:        TODO(); return {}; //missing
-   case SDL_SCANCODE_LEFTBRACKET:   return MetaOf<Keys::LeftBracket>(); 
-   case SDL_SCANCODE_RIGHTBRACKET:  return MetaOf<Keys::RightBracket>();
+   case SDL_SCANCODE_LEFTBRACKET:   return MetaDataOf<Keys::LeftBracket>(); 
+   case SDL_SCANCODE_RIGHTBRACKET:  return MetaDataOf<Keys::RightBracket>();
    case SDL_SCANCODE_BACKSLASH:
-   case SDL_SCANCODE_NONUSHASH:     return MetaOf<Keys::Hack>();           
-   case SDL_SCANCODE_SEMICOLON:     return MetaOf<Keys::Semicolon>();      
-   case SDL_SCANCODE_APOSTROPHE:    return MetaOf<Keys::Apostrophe>();     
-   case SDL_SCANCODE_GRAVE:         return MetaOf<Keys::Tilde>();          
-   case SDL_SCANCODE_COMMA:         return MetaOf<Keys::Comma>();          
-   case SDL_SCANCODE_PERIOD:        return MetaOf<Keys::Period>();         
-   case SDL_SCANCODE_SLASH:         return MetaOf<Keys::Slash>();          
+   case SDL_SCANCODE_NONUSHASH:     return MetaDataOf<Keys::Hack>();           
+   case SDL_SCANCODE_SEMICOLON:     return MetaDataOf<Keys::Semicolon>();      
+   case SDL_SCANCODE_APOSTROPHE:    return MetaDataOf<Keys::Apostrophe>();     
+   case SDL_SCANCODE_GRAVE:         return MetaDataOf<Keys::Tilde>();          
+   case SDL_SCANCODE_COMMA:         return MetaDataOf<Keys::Comma>();          
+   case SDL_SCANCODE_PERIOD:        return MetaDataOf<Keys::Period>();         
+   case SDL_SCANCODE_SLASH:         return MetaDataOf<Keys::Slash>();          
 
-   case SDL_SCANCODE_CAPSLOCK:      return MetaOf<Keys::CapsLock>();       
+   case SDL_SCANCODE_CAPSLOCK:      return MetaDataOf<Keys::CapsLock>();       
 
-   case SDL_SCANCODE_F1:            return MetaOf<Keys::F1>();             
-   case SDL_SCANCODE_F2:            return MetaOf<Keys::F2>();             
-   case SDL_SCANCODE_F3:            return MetaOf<Keys::F3>();             
-   case SDL_SCANCODE_F4:            return MetaOf<Keys::F4>();             
-   case SDL_SCANCODE_F5:            return MetaOf<Keys::F5>();             
-   case SDL_SCANCODE_F6:            return MetaOf<Keys::F6>();             
-   case SDL_SCANCODE_F7:            return MetaOf<Keys::F7>();             
-   case SDL_SCANCODE_F8:            return MetaOf<Keys::F8>();             
-   case SDL_SCANCODE_F9:            return MetaOf<Keys::F9>();             
-   case SDL_SCANCODE_F10:           return MetaOf<Keys::F10>();            
-   case SDL_SCANCODE_F11:           return MetaOf<Keys::F11>();            
-   case SDL_SCANCODE_F12:           return MetaOf<Keys::F12>();            
+   case SDL_SCANCODE_F1:            return MetaDataOf<Keys::F1>();             
+   case SDL_SCANCODE_F2:            return MetaDataOf<Keys::F2>();             
+   case SDL_SCANCODE_F3:            return MetaDataOf<Keys::F3>();             
+   case SDL_SCANCODE_F4:            return MetaDataOf<Keys::F4>();             
+   case SDL_SCANCODE_F5:            return MetaDataOf<Keys::F5>();             
+   case SDL_SCANCODE_F6:            return MetaDataOf<Keys::F6>();             
+   case SDL_SCANCODE_F7:            return MetaDataOf<Keys::F7>();             
+   case SDL_SCANCODE_F8:            return MetaDataOf<Keys::F8>();             
+   case SDL_SCANCODE_F9:            return MetaDataOf<Keys::F9>();             
+   case SDL_SCANCODE_F10:           return MetaDataOf<Keys::F10>();            
+   case SDL_SCANCODE_F11:           return MetaDataOf<Keys::F11>();            
+   case SDL_SCANCODE_F12:           return MetaDataOf<Keys::F12>();            
 
-   case SDL_SCANCODE_PRINTSCREEN:   return MetaOf<Keys::Print>();          
-   case SDL_SCANCODE_SCROLLLOCK:    return MetaOf<Keys::ScrollLock>();     
-   case SDL_SCANCODE_PAUSE:         return MetaOf<Keys::Pause>();          
-   case SDL_SCANCODE_INSERT:        return MetaOf<Keys::Insert>();         
-   case SDL_SCANCODE_HOME:          return MetaOf<Keys::Home>();           
-   case SDL_SCANCODE_PAGEUP:        return MetaOf<Keys::PageUp>();         
-   case SDL_SCANCODE_DELETE:        return MetaOf<Keys::Delete>();         
-   case SDL_SCANCODE_END:           return MetaOf<Keys::End>();            
-   case SDL_SCANCODE_PAGEDOWN:      return MetaOf<Keys::PageDown>();       
-   case SDL_SCANCODE_RIGHT:         return MetaOf<Keys::Right>();          
-   case SDL_SCANCODE_LEFT:          return MetaOf<Keys::Left>();           
-   case SDL_SCANCODE_DOWN:          return MetaOf<Keys::Down>();           
-   case SDL_SCANCODE_UP:            return MetaOf<Keys::Up>();             
+   case SDL_SCANCODE_PRINTSCREEN:   return MetaDataOf<Keys::Print>();          
+   case SDL_SCANCODE_SCROLLLOCK:    return MetaDataOf<Keys::ScrollLock>();     
+   case SDL_SCANCODE_PAUSE:         return MetaDataOf<Keys::Pause>();          
+   case SDL_SCANCODE_INSERT:        return MetaDataOf<Keys::Insert>();         
+   case SDL_SCANCODE_HOME:          return MetaDataOf<Keys::Home>();           
+   case SDL_SCANCODE_PAGEUP:        return MetaDataOf<Keys::PageUp>();         
+   case SDL_SCANCODE_DELETE:        return MetaDataOf<Keys::Delete>();         
+   case SDL_SCANCODE_END:           return MetaDataOf<Keys::End>();            
+   case SDL_SCANCODE_PAGEDOWN:      return MetaDataOf<Keys::PageDown>();       
+   case SDL_SCANCODE_RIGHT:         return MetaDataOf<Keys::Right>();          
+   case SDL_SCANCODE_LEFT:          return MetaDataOf<Keys::Left>();           
+   case SDL_SCANCODE_DOWN:          return MetaDataOf<Keys::Down>();           
+   case SDL_SCANCODE_UP:            return MetaDataOf<Keys::Up>();             
 
-   case SDL_SCANCODE_NUMLOCKCLEAR:  return MetaOf<Keys::NumLock>();        
-   case SDL_SCANCODE_KP_DIVIDE:     return MetaOf<Keys::NumpadDivide>();   
-   case SDL_SCANCODE_KP_MULTIPLY:   return MetaOf<Keys::NumpadMultiply>(); 
-   case SDL_SCANCODE_KP_MINUS:      return MetaOf<Keys::NumpadSubtract>(); 
-   case SDL_SCANCODE_KP_PLUS:       return MetaOf<Keys::NumpadAdd>();      
-   case SDL_SCANCODE_KP_ENTER:      return MetaOf<Keys::NumpadEnter>();    
-   case SDL_SCANCODE_KP_1:          return MetaOf<Keys::Numpad1>();        
-   case SDL_SCANCODE_KP_2:          return MetaOf<Keys::Numpad2>();        
-   case SDL_SCANCODE_KP_3:          return MetaOf<Keys::Numpad3>();        
-   case SDL_SCANCODE_KP_4:          return MetaOf<Keys::Numpad4>();        
-   case SDL_SCANCODE_KP_5:          return MetaOf<Keys::Numpad5>();        
-   case SDL_SCANCODE_KP_6:          return MetaOf<Keys::Numpad6>();        
-   case SDL_SCANCODE_KP_7:          return MetaOf<Keys::Numpad7>();        
-   case SDL_SCANCODE_KP_8:          return MetaOf<Keys::Numpad8>();        
-   case SDL_SCANCODE_KP_9:          return MetaOf<Keys::Numpad9>();        
-   case SDL_SCANCODE_KP_0:          return MetaOf<Keys::Numpad0>();        
-   case SDL_SCANCODE_KP_PERIOD:     return MetaOf<Keys::NumpadDecimal>();  
+   case SDL_SCANCODE_NUMLOCKCLEAR:  return MetaDataOf<Keys::NumLock>();        
+   case SDL_SCANCODE_KP_DIVIDE:     return MetaDataOf<Keys::NumpadDivide>();   
+   case SDL_SCANCODE_KP_MULTIPLY:   return MetaDataOf<Keys::NumpadMultiply>(); 
+   case SDL_SCANCODE_KP_MINUS:      return MetaDataOf<Keys::NumpadSubtract>(); 
+   case SDL_SCANCODE_KP_PLUS:       return MetaDataOf<Keys::NumpadAdd>();      
+   case SDL_SCANCODE_KP_ENTER:      return MetaDataOf<Keys::NumpadEnter>();    
+   case SDL_SCANCODE_KP_1:          return MetaDataOf<Keys::Numpad1>();        
+   case SDL_SCANCODE_KP_2:          return MetaDataOf<Keys::Numpad2>();        
+   case SDL_SCANCODE_KP_3:          return MetaDataOf<Keys::Numpad3>();        
+   case SDL_SCANCODE_KP_4:          return MetaDataOf<Keys::Numpad4>();        
+   case SDL_SCANCODE_KP_5:          return MetaDataOf<Keys::Numpad5>();        
+   case SDL_SCANCODE_KP_6:          return MetaDataOf<Keys::Numpad6>();        
+   case SDL_SCANCODE_KP_7:          return MetaDataOf<Keys::Numpad7>();        
+   case SDL_SCANCODE_KP_8:          return MetaDataOf<Keys::Numpad8>();        
+   case SDL_SCANCODE_KP_9:          return MetaDataOf<Keys::Numpad9>();        
+   case SDL_SCANCODE_KP_0:          return MetaDataOf<Keys::Numpad0>();        
+   case SDL_SCANCODE_KP_PERIOD:     return MetaDataOf<Keys::NumpadDecimal>();  
 
-   case SDL_SCANCODE_NONUSBACKSLASH:return MetaOf<Keys::Hack>();           
+   case SDL_SCANCODE_NONUSBACKSLASH:return MetaDataOf<Keys::Hack>();           
    case SDL_SCANCODE_APPLICATION:   TODO(); return {}; //missing
    case SDL_SCANCODE_POWER:         TODO(); return {}; //missing
-   case SDL_SCANCODE_KP_EQUALS:     return MetaOf<Keys::NumpadEqual>();    
-   case SDL_SCANCODE_F13:           return MetaOf<Keys::F13>();            
-   case SDL_SCANCODE_F14:           return MetaOf<Keys::F14>();            
-   case SDL_SCANCODE_F15:           return MetaOf<Keys::F15>();            
-   case SDL_SCANCODE_F16:           return MetaOf<Keys::F16>();            
-   case SDL_SCANCODE_F17:           return MetaOf<Keys::F17>();            
-   case SDL_SCANCODE_F18:           return MetaOf<Keys::F18>();            
-   case SDL_SCANCODE_F19:           return MetaOf<Keys::F19>();            
-   case SDL_SCANCODE_F20:           return MetaOf<Keys::F20>();            
-   case SDL_SCANCODE_F21:           return MetaOf<Keys::F21>();            
-   case SDL_SCANCODE_F22:           return MetaOf<Keys::F22>();            
-   case SDL_SCANCODE_F23:           return MetaOf<Keys::F23>();            
-   case SDL_SCANCODE_F24:           return MetaOf<Keys::F24>();            
+   case SDL_SCANCODE_KP_EQUALS:     return MetaDataOf<Keys::NumpadEqual>();    
+   case SDL_SCANCODE_F13:           return MetaDataOf<Keys::F13>();            
+   case SDL_SCANCODE_F14:           return MetaDataOf<Keys::F14>();            
+   case SDL_SCANCODE_F15:           return MetaDataOf<Keys::F15>();            
+   case SDL_SCANCODE_F16:           return MetaDataOf<Keys::F16>();            
+   case SDL_SCANCODE_F17:           return MetaDataOf<Keys::F17>();            
+   case SDL_SCANCODE_F18:           return MetaDataOf<Keys::F18>();            
+   case SDL_SCANCODE_F19:           return MetaDataOf<Keys::F19>();            
+   case SDL_SCANCODE_F20:           return MetaDataOf<Keys::F20>();            
+   case SDL_SCANCODE_F21:           return MetaDataOf<Keys::F21>();            
+   case SDL_SCANCODE_F22:           return MetaDataOf<Keys::F22>();            
+   case SDL_SCANCODE_F23:           return MetaDataOf<Keys::F23>();            
+   case SDL_SCANCODE_F24:           return MetaDataOf<Keys::F24>();            
 
    case SDL_SCANCODE_EXECUTE:       TODO(); return {}; //missing
    case SDL_SCANCODE_HELP:          TODO(); return {}; //missing
@@ -413,14 +418,14 @@ DMeta TranslateKey(SDL_Scancode i) {
    case SDL_SCANCODE_KP_DECIMAL:          TODO(); return {}; 
    case SDL_SCANCODE_KP_HEXADECIMAL:      TODO(); return {}; 
 
-   case SDL_SCANCODE_LCTRL:            return MetaOf<Keys::LeftControl>(); 
-   case SDL_SCANCODE_LSHIFT:           return MetaOf<Keys::LeftShift>();   
-   case SDL_SCANCODE_LALT:             return MetaOf<Keys::LeftAlt>();     
-   case SDL_SCANCODE_LGUI:             return MetaOf<Keys::LeftGUI>();
-   case SDL_SCANCODE_RCTRL:            return MetaOf<Keys::RightControl>();
-   case SDL_SCANCODE_RSHIFT:           return MetaOf<Keys::RightShift>();  
-   case SDL_SCANCODE_RALT:             return MetaOf<Keys::RightAlt>();    
-   case SDL_SCANCODE_RGUI:             return MetaOf<Keys::RightGUI>();
+   case SDL_SCANCODE_LCTRL:            return MetaDataOf<Keys::LeftControl>(); 
+   case SDL_SCANCODE_LSHIFT:           return MetaDataOf<Keys::LeftShift>();   
+   case SDL_SCANCODE_LALT:             return MetaDataOf<Keys::LeftAlt>();     
+   case SDL_SCANCODE_LGUI:             return MetaDataOf<Keys::LeftGUI>();
+   case SDL_SCANCODE_RCTRL:            return MetaDataOf<Keys::RightControl>();
+   case SDL_SCANCODE_RSHIFT:           return MetaDataOf<Keys::RightShift>();  
+   case SDL_SCANCODE_RALT:             return MetaDataOf<Keys::RightAlt>();    
+   case SDL_SCANCODE_RGUI:             return MetaDataOf<Keys::RightGUI>();
 
    case SDL_SCANCODE_MODE:             TODO(); return {}; //missing
 
@@ -453,16 +458,16 @@ DMeta TranslateKey(SDL_Scancode i) {
    }
 }
 
-DMeta TranslateMouse(Uint8 e) {
+RTTI::DMeta TranslateMouse(Uint8 e) {
    switch (e) {
-   case 0: return MetaOf<Keys::LeftMouse>();
-   case 1: return MetaOf<Keys::RightMouse>();
-   case 2: return MetaOf<Keys::MiddleMouse>();
-   case 3: return MetaOf<Keys::Mouse4>();
-   case 4: return MetaOf<Keys::Mouse5>();
-   case 5: return MetaOf<Keys::Mouse6>();
-   case 6: return MetaOf<Keys::Mouse7>();
-   case 7: return MetaOf<Keys::Mouse8>();
+   case 0: return MetaDataOf<Keys::LeftMouse>();
+   case 1: return MetaDataOf<Keys::RightMouse>();
+   case 2: return MetaDataOf<Keys::MiddleMouse>();
+   case 3: return MetaDataOf<Keys::Mouse4>();
+   case 4: return MetaDataOf<Keys::Mouse5>();
+   case 5: return MetaDataOf<Keys::Mouse6>();
+   case 6: return MetaDataOf<Keys::Mouse7>();
+   case 7: return MetaDataOf<Keys::Mouse8>();
    default:
       LglsError("Missing mouse button event");
       return {};
