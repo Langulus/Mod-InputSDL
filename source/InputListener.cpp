@@ -146,18 +146,11 @@ bool Anticipator::Interact(EventQueue const& events) {
       // event, and shall execute its script on each tick inbetween     
       // This is a 'hold' event and is handled from the Update routine  
       if (not mActive) {
-         const auto foundState = foundEvent.GetVal().Find(EventState::Begin);
-         if (foundState) {
-            Update(foundState.GetVal());
-            mActive = true;
-            mFlow.Reset();
-         }
+         Update(*foundEvent);
+         mActive = true;
+         mFlow.Reset();
       }
-      else {
-         const auto foundState = foundEvent.GetVal().Find(EventState::End);
-         if (foundState)
-            mActive = false;
-      }
+      else mActive = false;
    }
 
    return mActive;
@@ -166,6 +159,6 @@ bool Anticipator::Interact(EventQueue const& events) {
 /// Stringify the anticipator                                                 
 Anticipator::operator Text() const {
    return Text::Format(
-      "{}(on {} {}: {})", MetaDataOf<Anticipator>(), mEventType, mEventState, mScript
+      "{}(on {} {}: {})", MetaDataOf<Anticipator>(), mEventState, mEventType, mScript
    );
 }

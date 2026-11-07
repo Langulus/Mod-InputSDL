@@ -23,8 +23,8 @@ private:
    // List of created input gatherers                                   
    TFactory<InputGatherer> mGatherers;
 
-   // Global list of events                                             
-   EventQueue mGlobalEvents;
+   // Accumulated events, dispatched on each Update() to listeners      
+   EventQueue mEventQueue;
 
 public:
     InputSDL(Runtime*, Neat const&);

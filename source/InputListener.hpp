@@ -57,6 +57,8 @@ public:
    explicit operator Text() const;
 };
 
+LANGULUS_MORPHISM(Anticipator, Annies::Text);
+
 
 ///                                                                           
 ///   Input listener                                                          

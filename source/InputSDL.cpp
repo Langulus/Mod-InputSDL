@@ -17,8 +17,8 @@ LANGULUS_DEFINE_MODULE(
 )
 
 
-RTTI::DMeta TranslateKey(SDL_Scancode);
-RTTI::DMeta TranslateMouse(Uint8);
+auto TranslateKey(SDL_Scancode) -> RTTI::DMeta;
+auto TranslateMouse(Uint8) -> RTTI::DMeta;
 
 
 /// Module construction                                                       
@@ -41,7 +41,7 @@ InputSDL::InputSDL(Runtime* runtime, Neat const&)
 
 ///                                                                           
 InputSDL::~InputSDL() {
-   mGlobalEvents.Reset();
+   mEventQueue.Reset();
    mGatherers.Reset();
 
    SDL_Quit();
@@ -106,7 +106,7 @@ bool InputSDL::Update(Time deltaTime) {
             TranslateMouse(e.button.button),
             EventState::Begin
          );
-         VERBOSE_INPUT("Mouse button pressed: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Mouse button pressed: ", newEvent.GetEvent());
          PushEvent(newEvent);
          break;
       }
@@ -116,7 +116,7 @@ bool InputSDL::Update(Time deltaTime) {
             TranslateMouse(e.button.button),
             EventState::End
          );
-         VERBOSE_INPUT("Mouse button released: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Mouse button released: ", newEvent.GetEvent());
          PushEvent(newEvent);
          break;
       }
@@ -138,7 +138,7 @@ bool InputSDL::Update(Time deltaTime) {
             TranslateKey(e.key.scancode),
             EventState::Begin
          );
-         VERBOSE_INPUT("Keyboard button pressed: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Keyboard button pressed: ", newEvent.GetEvent());
          PushEvent(newEvent);
          break;
       }
@@ -148,7 +148,7 @@ bool InputSDL::Update(Time deltaTime) {
             TranslateKey(e.key.scancode),
             EventState::End
          );
-         VERBOSE_INPUT("Keyboard button released: ", newEvent.mType.GetToken());
+         VERBOSE_INPUT("Keyboard button released: ", newEvent.GetEvent());
          PushEvent(newEvent);
          break;
       }}
@@ -164,9 +164,9 @@ bool InputSDL::Update(Time deltaTime) {
 
    // Update all gatherers                                              
    for (auto& gatherer : mGatherers)
-      gatherer.Update(deltaTime, mGlobalEvents);
+      gatherer.Update(deltaTime, mEventQueue);
 
-   mGlobalEvents.Clear();
+   mEventQueue.Clear();
    return true;
 }
 
@@ -179,27 +179,22 @@ void InputSDL::Create(Verb& verb) {
 /// Push a global event, that will be propagated to all gatherers             
 ///   @param e event to push                                                  
 void InputSDL::PushEvent(Event const& e) {
-   const auto foundEvent = mGlobalEvents.Find(e.mType);
-   if (foundEvent) {
-      auto foundState = foundEvent.GetVal().Find(e.mState);
-      if (foundState) {
-         // Event already exists, merge payload                         
-         foundState.GetVal().mPayload += e.mPayload;
-         return;
-      }
-      foundEvent.GetVal().Merge(e.mState, e);
+   const auto signature = EventSignature {e.GetEvent(), e.GetEventState()};
+   auto found = mEventQueue.Find(signature);
+   if (found) {
+      // Event-state pair already exists, merge payload           
+      found.GetVal().Concat(e.GetPayload());
    }
    else {
-      mGlobalEvents.Merge(e.mType);
-      auto& newGroup = mGlobalEvents[e.mType];
-      newGroup.Merge(e.mState, e);
+      // Event-state pair doesn't exist yet                       
+      mEventQueue.Merge(signature, e);
    }
 }
 
 /// SDL3 keyboard event -> Langulus event translator                          
 ///   @param i the code to translate                                          
 ///   @return the translated event                                            
-RTTI::DMeta TranslateKey(SDL_Scancode i) {
+auto TranslateKey(SDL_Scancode i) -> RTTI::DMeta {
    switch (i) {
    case SDL_SCANCODE_A:             return MetaDataOf<Keys::A>();
    case SDL_SCANCODE_B:             return MetaDataOf<Keys::B>();
@@ -458,7 +453,7 @@ RTTI::DMeta TranslateKey(SDL_Scancode i) {
    }
 }
 
-RTTI::DMeta TranslateMouse(Uint8 e) {
+auto TranslateMouse(Uint8 e) -> RTTI::DMeta {
    switch (e) {
    case 0: return MetaDataOf<Keys::LeftMouse>();
    case 1: return MetaDataOf<Keys::RightMouse>();
