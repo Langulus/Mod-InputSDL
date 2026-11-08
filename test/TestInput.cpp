@@ -18,8 +18,8 @@ SCENARIO("Input handler creation", "[input]") {
          auto root = Thing::Root<false>("InputSDL");
 
          WHEN("The input gatherer is created via abstractions") {
-            auto gatherer = root.CreateUnit<Things::InputGatherer>();
-            auto listener = root.CreateUnit<Things::InputListener>();
+            auto gatherer = root.CreatePart<Things::InputGatherer>();
+            auto listener = root.CreatePart<Things::InputListener>();
 
             // Update once                                              
             root.Update({});

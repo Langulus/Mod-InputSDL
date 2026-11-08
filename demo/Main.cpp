@@ -9,7 +9,6 @@
 #include <Langulus/Time.hpp>
 #include <thread>
 
-LANGULUS_RTTI_BOUNDARY(RTTI::MainBoundary)
 using namespace Langulus;
 
 
@@ -18,7 +17,7 @@ int main(int, char**) {
 
    // Create root entity                                                
    auto root = Thing::Root<false>("InputSDL");
-   root.CreateUnits<Things::InputGatherer, Things::InputListener>();
+   root.CreateParts<Things::InputGatherer, Things::InputListener>();
 
    while (true) {
       // Update until quit                                              
