@@ -6,10 +6,11 @@
 /// SPDX-License-Identifier: GPL-3.0-or-later                                 
 ///                                                                           
 #include <Langulus/CppAPI/Input.hpp>
-#include <Langulus/Time.hpp>
+#include <Langulus/Framerate.hpp>
 #include <thread>
 
 using namespace Langulus;
+using Things::Thing;
 
 
 int main(int, char**) {
